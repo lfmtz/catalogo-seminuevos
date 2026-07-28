@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: lfmtz/catalogo-seminuevos
+  name: git-gateway
   branch: main
 
 media_folder: "assets/images"
