@@ -1,0 +1,2 @@
+# catalogo-seminuevos
+LANDING PARA VENTA DE AUTOS SEMINUEVOS
