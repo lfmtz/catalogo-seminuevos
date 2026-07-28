@@ -74,6 +74,15 @@ app.post('/api/sync', (req, res) => {
     });
 });
 
+// Graceful Shutdown Endpoint
+app.post('/api/shutdown', (req, res) => {
+    res.json({ success: true, message: 'Apagando servidor...' });
+    console.log('🛑 Apagando el servidor por solicitud del administrador...');
+    setTimeout(() => {
+        process.exit(0);
+    }, 1000);
+});
+
 app.listen(PORT, () => {
     console.log(`\n🚗 Servidor del Catálogo iniciado en: http://localhost:${PORT}`);
     console.log(`⚙️  Panel de Administración local en: http://localhost:${PORT}/admin/\n`);

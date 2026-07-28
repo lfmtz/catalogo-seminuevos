@@ -279,6 +279,9 @@
                 <button class="btn-primary" id="btn-add">
                     ➕ Nuevo Auto
                 </button>
+                <button class="btn-danger" id="btn-shutdown" style="background-color: var(--danger); color: white; border-color: transparent;">
+                    🛑 Apagar Servidor
+                </button>
             </div>
         </header>
 
@@ -584,6 +587,25 @@
                 showToast('Error de red al sincronizar.');
             } finally {
                 btnSync.disabled = false;
+            }
+        });
+
+        // Shutdown Server
+        const btnShutdown = document.getElementById('btn-shutdown');
+        btnShutdown.addEventListener('click', async () => {
+            if (confirm('¿Estás seguro de que quieres apagar el servidor local?')) {
+                showToast('Apagando servidor...');
+                try {
+                    await fetch('/api/shutdown', { method: 'POST' });
+                } catch (e) {
+                    // Fetch will fail when server shuts down instantly, which is expected
+                }
+                document.body.innerHTML = `
+                    <div style="text-align:center; padding: 5rem; font-family: var(--font-family);">
+                        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">🛑 Servidor Apagado</h1>
+                        <p style="color: var(--text-secondary);">El servidor de Node se ha cerrado correctamente. Ya puedes cerrar esta pestaña.</p>
+                    </div>
+                `;
             }
         });
 
