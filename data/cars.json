@@ -1,0 +1,89 @@
+[
+  {
+    "id": "auto-1",
+    "marca": "Nissan",
+    "modelo": "Versa 2021",
+    "precio": "$245,000",
+    "duenos": "Único Dueño",
+    "motor": "1.6L 4Cil",
+    "kilometraje": "42,000 km",
+    "tenencias": "Pagadas al 2026",
+    "verificacion": "Holograma 0 / Vigente",
+    "transmision": "Automática",
+    "descripcion": "Excelentes condiciones mecánicas y de carrocería. Servicios de agencia.",
+    "fotos": [
+      "assets/images/auto-1/1.jpg",
+      "assets/images/auto-1/2.jpg",
+      "assets/images/auto-1/3.jpg"
+    ]
+  },
+  {
+    "id": "auto-2",
+    "marca": "Mazda",
+    "modelo": "Mazda 3 2019",
+    "precio": "$310,000",
+    "duenos": "2 Dueños",
+    "motor": "2.5L 4Cil",
+    "kilometraje": "68,000 km",
+    "tenencias": "Pagadas al 2026",
+    "verificacion": "Holograma 0 / Vigente",
+    "transmision": "Automática",
+    "descripcion": "Equipado, quemacocos, pantalla táctil, interiores en piel bien conservados.",
+    "fotos": [
+      "assets/images/auto-2/1.jpg",
+      "assets/images/auto-2/2.jpg",
+      "assets/images/auto-2/3.jpg"
+    ]
+  },
+  {
+    "id": "auto-3",
+    "marca": "Toyota",
+    "modelo": "RAV4 2020",
+    "precio": "$455,000",
+    "duenos": "Único Dueño",
+    "motor": "2.5L Híbrido",
+    "kilometraje": "55,000 km",
+    "tenencias": "Pagadas al 2026",
+    "verificacion": "Exento (Híbrido) / Vigente",
+    "transmision": "CVT",
+    "descripcion": "Versión XLE Híbrida. Súper ahorradora de combustible, todos los servicios de agencia.",
+    "fotos": [
+      "assets/images/auto-3/1.jpg",
+      "assets/images/auto-3/2.jpg"
+    ]
+  },
+  {
+    "id": "auto-4",
+    "marca": "Volkswagen",
+    "modelo": "Jetta 2018",
+    "precio": "$220,000",
+    "duenos": "Único Dueño",
+    "motor": "2.0L 4Cil",
+    "kilometraje": "90,000 km",
+    "tenencias": "Pagadas al 2025",
+    "verificacion": "Holograma 1 / Vigente",
+    "transmision": "Manual",
+    "descripcion": "Transmisión manual de 5 velocidades, aire acondicionado, vidrios eléctricos delanteros.",
+    "fotos": [
+      "assets/images/auto-4/1.jpg",
+      "assets/images/auto-4/2.jpg"
+    ]
+  },
+  {
+    "id": "auto-5",
+    "marca": "Chevrolet",
+    "modelo": "Aveo 2022",
+    "precio": "$215,000",
+    "duenos": "Único Dueño",
+    "motor": "1.5L 4Cil",
+    "kilometraje": "35,000 km",
+    "tenencias": "Pagadas al 2026",
+    "verificacion": "Holograma 0 / Vigente",
+    "transmision": "Manual",
+    "descripcion": "Auto muy ahorrador, excelentes condiciones para ciudad, único dueño, factura original.",
+    "fotos": [
+      "assets/images/auto-5/1.jpg",
+      "assets/images/auto-5/2.jpg"
+    ]
+  }
+]

@@ -1,0 +1,45 @@
+backend:
+  name: github
+  repo: lfmtz/catalogo-seminuevos
+  branch: main
+
+media_folder: "assets/images"
+public_folder: "/assets/images"
+
+collections:
+  - name: "cars"
+    label: "Autos Seminuevos"
+    folder: "data"
+    extension: "json"
+    format: "json"
+    create: true
+    slug: "{{id}}"
+    identifier_field: "id"
+    fields:
+      - { label: "ID Único (ej. auto-6)", name: "id", widget: "string" }
+      - { label: "Marca", name: "marca", widget: "string" }
+      - { label: "Modelo y Año", name: "modelo", widget: "string" }
+      - { label: "Precio (ej. $245,000)", name: "precio", widget: "string" }
+      - { 
+          label: "Dueños", 
+          name: "duenos", 
+          widget: "select", 
+          options: ["Único Dueño", "Segundo Dueño", "3 Dueños o más"] 
+        }
+      - { label: "Motor (ej. 1.6L 4Cil)", name: "motor", widget: "string" }
+      - { label: "Kilometraje (ej. 42,000 km)", name: "kilometraje", widget: "string" }
+      - { label: "Tenencias (ej. Pagadas al 2026)", name: "tenencias", widget: "string" }
+      - { label: "Verificación (ej. Holograma 0 / Vigente)", name: "verificacion", widget: "string" }
+      - { 
+          label: "Transmisión", 
+          name: "transmision", 
+          widget: "select", 
+          options: ["Automática", "Manual", "CVT", "Doble Embrague"] 
+        }
+      - { label: "Descripción", name: "descripcion", widget: "text" }
+      - { 
+          label: "Fotos", 
+          name: "fotos", 
+          widget: "list", 
+          field: { label: "Ruta de Foto (ej. assets/images/auto-X/1.jpg)", widget: "string" } 
+        }

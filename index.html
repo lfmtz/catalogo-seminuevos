@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Seminuevos - Calidad y Confianza</title>
+    <!-- Google Fonts for Modern Tech Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <div class="brand">
+                <span class="brand-badge">Premium</span>
+                <h1>Catálogo Seminuevos</h1>
+            </div>
+            <p class="subtitle">Encuentra tu próximo vehículo con total transparencia y seguridad.</p>
+            
+            <div class="filter-bar">
+                <div class="search-box">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search-input" placeholder="Buscar por marca o modelo...">
+                </div>
+                <div class="filter-box">
+                    <label for="owner-filter" class="sr-only">Filtrar por dueños</label>
+                    <select id="owner-filter">
+                        <option value="all">Todos los dueños</option>
+                        <option value="Único Dueño">Único Dueño</option>
+                        <option value="Segundo Dueño">Segundo Dueño o más</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div id="cars-grid" class="cars-grid">
+                <!-- Dynamic cards will be rendered here -->
+                <div class="loading-state">Cargando catálogo...</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Catálogo Seminuevos. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
