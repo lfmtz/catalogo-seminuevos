@@ -7,32 +7,28 @@ media_folder: "assets/images"
 public_folder: "assets/images"
 
 collections:
-  - name: "autos"
+  - name: "cars"
     label: "Autos Seminuevos"
-    files:
-      - file: "data/cars.json"
-        label: "Lista de Vehículos"
-        name: "cars"
-        fields:
-          - label: "Vehículos"
-            name: "cars"
-            widget: "list"
-            fields:
-              - { label: "ID Único", name: "id", widget: "string", default: "auto-1" }
-              - { label: "Marca", name: "marca", widget: "string" }
-              - { label: "Modelo y Año", name: "modelo", widget: "string" }
-              - { label: "Precio", name: "precio", widget: "string" }
-              - { label: "Condición / Dueño", name: "duenos", widget: "select", options: ["Único Dueño", "Segundo Dueño", "Tercer Dueño"] }
-              - { label: "Motor", name: "motor", widget: "string" }
-              - { label: "Kilometraje", name: "kilometraje", widget: "string" }
-              - { label: "Tenencias", name: "tenencias", widget: "string" }
-              - { label: "Verificación", name: "verificacion", widget: "string" }
-              - { label: "Transmisión", name: "transmision", widget: "string" }
-              - { label: "Descripción", name: "descripcion", widget: "text", required: false }
-              - label: "Fotos del Vehículo"
-                name: "fotos"
-                widget: "list"
-                field:
-                  name: "foto"
-                  label: "Imagen"
-                  widget: "image"
+    folder: "data"
+    extension: "json"
+    format: "json"
+    create: true
+    slug: "{{id}}"
+    identifier_field: "id"
+    fields:
+      - { label: "ID Único", name: "id", widget: "string", default: "auto-1" }
+      - { label: "Marca", name: "marca", widget: "string" }
+      - { label: "Modelo y Año", name: "modelo", widget: "string" }
+      - { label: "Precio", name: "precio", widget: "string" }
+      - { label: "Condición / Dueño", name: "duenos", widget: "select", options: ["Único Dueño", "Segundo Dueño", "Tercer Dueño"] }
+      - { label: "Motor", name: "motor", widget: "string" }
+      - { label: "Kilometraje", name: "kilometraje", widget: "string" }
+      - { label: "Tenencias", name: "tenencias", widget: "string" }
+      - { label: "Verificación", name: "verificacion", widget: "string" }
+      - { label: "Transmisión", name: "transmision", widget: "string" }
+      - { label: "Descripción", name: "descripcion", widget: "text", required: false }
+      - label: "Fotos del Vehículo"
+        name: "fotos"
+        widget: "list"
+        summary: "{{fields.foto}}"
+        field: { label: "Imagen", name: "foto", widget: "image" }
