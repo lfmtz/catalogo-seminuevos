@@ -1,14 +1,550 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel de Administración - Seminuevos</title>
-    <!-- Netlify Identity Widget for authentication -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  </head>
-  <body>
-    <!-- Decap CMS Core Script -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  </body>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador del Catálogo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafafa;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #1e293b;
+            --border-color: #eaeaea;
+            --success: #10b981;
+            --danger: #ef4444;
+            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            --transition-smooth: all 0.2s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .admin-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            font-family: var(--font-family);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0f172a;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: #fee2e2;
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+
+        .btn-danger:hover {
+            background-color: #fecaca;
+        }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: var(--text-secondary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8fafc;
+            color: var(--text-primary);
+        }
+
+        /* Form styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-full {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        input, select, textarea {
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+            transition: var(--transition-smooth);
+            background-color: #ffffff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #94a3b8;
+        }
+
+        /* Autos Grid / List */
+        .cars-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .car-row {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .car-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .car-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .car-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 650px;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--accent);
+            color: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: 200;
+        }
+
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header>
+            <div class="header-title">
+                <h1>Administrador del Catálogo</h1>
+                <p>Gestiona los autos de tu catálogo local y sincronízalos con GitHub.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-success" id="btn-sync">
+                    🔄 Sincronizar GitHub
+                </button>
+                <button class="btn-primary" id="btn-add">
+                    ➕ Nuevo Auto
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="cars-list" id="cars-list">
+                <!-- Autos dynamically listed -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Form (Add / Edit) -->
+    <div class="modal" id="car-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Agregar Auto</h2>
+                <span class="close-btn" id="modal-close">&times;</span>
+            </div>
+            <form id="car-form">
+                <input type="hidden" id="car-id-original">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="car-id">ID Único (ej. auto-6)</label>
+                        <input type="text" id="car-id" required placeholder="auto-x">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-marca">Marca</label>
+                        <input type="text" id="car-marca" required placeholder="Nissan">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-modelo">Modelo y Año</label>
+                        <input type="text" id="car-modelo" required placeholder="Versa 2021">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-precio">Precio</label>
+                        <input type="text" id="car-precio" required placeholder="$245,000">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-duenos">Dueño</label>
+                        <select id="car-duenos">
+                            <option value="Único Dueño">Único Dueño</option>
+                            <option value="2 Dueños">2 Dueños</option>
+                            <option value="3 Dueños o más">3 Dueños o más</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="car-motor">Motor</label>
+                        <input type="text" id="car-motor" required placeholder="1.6L 4Cil">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-kilometraje">Kilometraje</label>
+                        <input type="text" id="car-kilometraje" required placeholder="42,000 km">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-tenencias">Tenencias</label>
+                        <input type="text" id="car-tenencias" required placeholder="Pagadas al 2026">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-verificacion">Verificación</label>
+                        <input type="text" id="car-verificacion" required placeholder="Holograma 0 / Vigente">
+                    </div>
+                    <div class="form-group">
+                        <label for="car-transmision">Transmisión</label>
+                        <select id="car-transmision">
+                            <option value="Automática">Automática</option>
+                            <option value="Manual">Manual</option>
+                            <option value="CVT">CVT</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="car-descripcion">Descripción</label>
+                        <textarea id="car-descripcion" rows="3" required placeholder="Detalles de la unidad..."></textarea>
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="car-fotos">Rutas de Fotos (una por línea)</label>
+                        <textarea id="car-fotos" rows="3" required placeholder="assets/images/auto-x/1.jpg"></textarea>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+                    <button type="button" class="btn-secondary" id="modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Auto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast-msg">Mensaje de notificación</div>
+
+    <script>
+        let cars = [];
+        const carsList = document.getElementById('cars-list');
+        const carModal = document.getElementById('car-modal');
+        const carForm = document.getElementById('car-form');
+        const modalTitle = document.getElementById('modal-title');
+        const btnAdd = document.getElementById('btn-add');
+        const btnSync = document.getElementById('btn-sync');
+        const toast = document.getElementById('toast-msg');
+
+        // Fetch cars on load
+        async function loadCars() {
+            try {
+                const response = await fetch('/api/cars');
+                cars = await response.json();
+                renderCars();
+            } catch (error) {
+                showToast('Error al cargar catálogo.');
+            }
+        }
+
+        function renderCars() {
+            carsList.innerHTML = '';
+            if (cars.length === 0) {
+                carsList.innerHTML = '<div style="text-align:center; padding: 3rem; color: var(--text-secondary);">No hay autos en el catálogo.</div>';
+                return;
+            }
+            
+            cars.forEach(car => {
+                const row = document.createElement('div');
+                row.className = 'car-row';
+                row.innerHTML = `
+                    <div class="car-info">
+                        <h3>${car.marca} ${car.modelo}</h3>
+                        <p>${car.precio} | ${car.kilometraje} | ${car.duenos} | ID: ${car.id}</p>
+                    </div>
+                    <div class="car-actions">
+                        <button class="btn-secondary" onclick="editCar('${car.id}')">✏️ Editar</button>
+                        <button class="btn-danger" onclick="deleteCar('${car.id}')">🗑️ Borrar</button>
+                    </div>
+                `;
+                carsList.appendChild(row);
+            });
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Form handlers
+        function openModal(car = null) {
+            carForm.reset();
+            if (car) {
+                modalTitle.textContent = 'Editar Auto';
+                document.getElementById('car-id-original').value = car.id;
+                document.getElementById('car-id').value = car.id;
+                document.getElementById('car-marca').value = car.marca;
+                document.getElementById('car-modelo').value = car.modelo;
+                document.getElementById('car-precio').value = car.precio;
+                document.getElementById('car-duenos').value = car.duenos;
+                document.getElementById('car-motor').value = car.motor;
+                document.getElementById('car-kilometraje').value = car.kilometraje;
+                document.getElementById('car-tenencias').value = car.tenencias;
+                document.getElementById('car-verificacion').value = car.verificacion;
+                document.getElementById('car-transmision').value = car.transmision;
+                document.getElementById('car-descripcion').value = car.descripcion;
+                document.getElementById('car-fotos').value = car.fotos.join('\n');
+            } else {
+                modalTitle.textContent = 'Agregar Auto';
+                document.getElementById('car-id-original').value = '';
+                // Default routes template
+                document.getElementById('car-id').addEventListener('input', updateFotosPlaceholder);
+            }
+            carModal.classList.add('active');
+        }
+
+        function updateFotosPlaceholder() {
+            const idVal = document.getElementById('car-id').value || 'auto-x';
+            document.getElementById('car-fotos').value = `assets/images/${idVal}/1.jpg\nassets/images/${idVal}/2.jpg`;
+        }
+
+        function closeModal() {
+            carModal.classList.remove('active');
+            document.getElementById('car-id').removeEventListener('input', updateFotosPlaceholder);
+        }
+
+        window.editCar = function(id) {
+            const car = cars.find(c => c.id === id);
+            if (car) openModal(car);
+        };
+
+        window.deleteCar = async function(id) {
+            if (confirm('¿Estás seguro de que quieres borrar este vehículo?')) {
+                cars = cars.filter(c => c.id !== id);
+                await saveCars();
+            }
+        };
+
+        async function saveCars() {
+            try {
+                const response = await fetch('/api/cars', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cars)
+                });
+                if (response.ok) {
+                    showToast('¡Catálogo guardado localmente!');
+                    renderCars();
+                } else {
+                    showToast('Error al guardar datos.');
+                }
+            } catch (error) {
+                showToast('Error de conexión.');
+            }
+        }
+
+        // Submits
+        carForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const originalId = document.getElementById('car-id-original').value;
+            const id = document.getElementById('car-id').value;
+            const marca = document.getElementById('car-marca').value;
+            const modelo = document.getElementById('car-modelo').value;
+            const precio = document.getElementById('car-precio').value;
+            const duenos = document.getElementById('car-duenos').value;
+            const motor = document.getElementById('car-motor').value;
+            const kilometraje = document.getElementById('car-kilometraje').value;
+            const tenencias = document.getElementById('car-tenencias').value;
+            const verificacion = document.getElementById('car-verificacion').value;
+            const transmision = document.getElementById('car-transmision').value;
+            const descripcion = document.getElementById('car-descripcion').value;
+            const fotos = document.getElementById('car-fotos').value.split('\n').filter(line => line.trim() !== '');
+
+            const carData = { id, marca, modelo, precio, duenos, motor, kilometraje, tenencias, verificacion, transmision, descripcion, fotos };
+
+            if (originalId) {
+                // Update
+                const index = cars.findIndex(c => c.id === originalId);
+                cars[index] = carData;
+            } else {
+                // Check dupes
+                if (cars.some(c => c.id === id)) {
+                    alert('Ese ID ya existe.');
+                    return;
+                }
+                cars.push(carData);
+            }
+
+            closeModal();
+            await saveCars();
+        });
+
+        // Sync to GitHub
+        btnSync.addEventListener('click', async () => {
+            showToast('Sincronizando con GitHub...');
+            btnSync.disabled = true;
+            try {
+                const response = await fetch('/api/sync', { method: 'POST' });
+                if (response.ok) {
+                    showToast('🎉 ¡Sincronizado con GitHub con éxito!');
+                } else {
+                    showToast('❌ Error de sincronización.');
+                }
+            } catch (error) {
+                showToast('Error de red al sincronizar.');
+            } finally {
+                btnSync.disabled = false;
+            }
+        });
+
+        btnAdd.addEventListener('click', () => openModal());
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        document.getElementById('modal-cancel').addEventListener('click', closeModal);
+        
+        loadCars();
+    </script>
+</body>
 </html>
