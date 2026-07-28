@@ -4,12 +4,12 @@ const path = require('path');
 const { exec } = require('child_process');
 
 const app = express();
-const PORT = 8080;
+const PORT = 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..')));
+app.use(express.static(path.join(__dirname, '.')));
 
-const DATA_FILE = path.join(__dirname, '..', 'data', 'cars.json');
+const DATA_FILE = path.join(__dirname, 'data', 'cars.json');
 
 // Get all cars
 app.get('/api/cars', (req, res) => {
