@@ -1,0 +1,7 @@
+# Dependencias y archivos locales (no se suben)
+node_modules/
+.env
+.env.*
+.netlify/
+*.log
+.DS_Store
