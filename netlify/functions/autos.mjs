@@ -3,7 +3,7 @@
 // Para volver a pedir código: en Netlify, variable PEDIR_CODIGO = si (y CODIGO_ACCESO con el código).
 import { sesionValida, json } from "../lib/sesion.mjs";
 import { leerHoja } from "../lib/google.mjs";
-import { filasAAutos } from "../lib/autos.mjs";
+import { filasAAutos, letrasDeCuentas } from "../lib/autos.mjs";
 
 const ID_HOJA_DEFAULT = "16yCHGb2Fn1t0cWDZOZrOQ9xoRavgGV3opocBjbtC0zU";
 const CACHE_MS = 5 * 60 * 1000; // la hoja cambia una vez al día; 5 min de caché basta
@@ -20,17 +20,22 @@ export default async (req) => {
     if (!cache.autos || Date.now() - cache.hora > CACHE_MS) {
       const idHoja = process.env.SHEET_ID || ID_HOJA_DEFAULT;
       const pestanaClientes = process.env.SHEET_TAB_CLIENTES || "Clientes";
-      const [agencia, clientes] = await Promise.all([
+      const opcional = (rango) =>
+        leerHoja(idHoja, rango).catch((e) => {
+          console.warn(`Rango "${rango}" no disponible:`, e.message);
+          return [];
+        });
+      const [agencia, clientes, cuentas] = await Promise.all([
         // Pestaña de Mercado Libre (obligatoria)
         leerHoja(idHoja, `${process.env.SHEET_TAB || "Hoja 1"}!A1:Z500`),
         // Pestaña de autos de clientes (opcional: si no existe, se ignora)
-        leerHoja(idHoja, `${pestanaClientes}!A1:Z300`).catch((e) => {
-          console.warn(`Pestaña "${pestanaClientes}" no disponible:`, e.message);
-          return [];
-        }),
+        opcional(`${pestanaClientes}!A1:Z300`),
+        // Pestaña de cuentas de agencia y su letra para el WhatsApp (opcional)
+        opcional("Cuentas!A1:G50"),
       ]);
+      const letras = letrasDeCuentas(cuentas);
       cache = {
-        autos: [...filasAAutos(agencia, "agencia"), ...filasAAutos(clientes, "cliente")],
+        autos: [...filasAAutos(agencia, "agencia", letras), ...filasAAutos(clientes, "cliente")],
         hora: Date.now(),
       };
     }

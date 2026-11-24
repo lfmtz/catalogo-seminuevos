@@ -63,9 +63,12 @@ function urlFoto(v) {
   return t;
 }
 
-// "Nissan Iztacalco" → N · "Chevrolet Iztacalco" → C · vacío → A (agencia sin especificar)
-function letraCuenta(v) {
+// Letra de la referencia de WhatsApp. Primero se busca en la pestaña "Cuentas" (columna "Letra");
+// si la cuenta no está ahí: "Nissan…" → N · "Chevrolet…" → C · "…Kasa…" → K · vacío → A.
+function letraCuenta(v, letras = {}) {
   const t = normalizar(v);
+  if (t && letras[t]) return letras[t];
+  if (t.includes("kasa")) return "K";
   if (t.includes("nissan")) return "N";
   if (t.includes("chevrolet") || t.includes("chevy")) return "C";
   return t ? t.charAt(0).toUpperCase() : "A";
@@ -89,7 +92,23 @@ export function partirTitulo(titulo) {
 }
 
 // origen: "agencia" (pestaña de Mercado Libre) o "cliente" (pestaña "Clientes", autos de particulares).
-export function filasAAutos(filas, origen = "agencia") {
+// Lee la pestaña "Cuentas" y regresa { "nissan iztacalco": "N", ... }
+export function letrasDeCuentas(filas) {
+  if (!filas.length) return {};
+  const enc = filas[0];
+  const iNombre = buscarColumna(enc, "cuenta");
+  const iLetra = buscarColumna(enc, "letra");
+  if (iNombre === -1 || iLetra === -1) return {};
+  const letras = {};
+  filas.slice(1).forEach((f) => {
+    const nombre = normalizar(f[iNombre]);
+    const letra = String(f[iLetra] ?? "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 3);
+    if (nombre && letra) letras[nombre] = letra;
+  });
+  return letras;
+}
+
+export function filasAAutos(filas, origen = "agencia", letras = {}) {
   if (!filas.length) return [];
   const esCliente = origen === "cliente";
   const enc = filas[0];
@@ -131,7 +150,7 @@ export function filasAAutos(filas, origen = "agencia") {
       origen,
       // Referencia discreta para el WhatsApp de Luis: N = Nissan, C = Chevrolet, P = particular.
       // El nombre de la agencia NO se manda al navegador.
-      ref: `${esCliente ? "P" : letraCuenta(col.cuenta !== -1 ? f[col.cuenta] : "")}-${id.replace(/^[AP]/, "")}`,
+      ref: `${esCliente ? "P" : letraCuenta(col.cuenta !== -1 ? f[col.cuenta] : "", letras)}-${id.replace(/^[AP]/, "")}`,
       // Particulares: de contado salvo que la columna "Forma de pago" diga otra cosa.
       pago: pagoTexto || (esCliente ? "Contado" : ""),
       titulo,
