@@ -123,3 +123,15 @@ La fila 2 (gris, Estado = `Ejemplo`) es de muestra y no se publica.
 3. Abre cada foto → **⋮** → **Compartir** → **Copiar vínculo** y pégalo en `Foto 1`, `Foto 2`…
 
 Los cambios aparecen en el catálogo en máximo 5 minutos.
+
+---
+
+## Varios inventarios de Mercado Libre
+
+- Todos van en `Hoja 1`, con la columna **`Cuenta`** (ej. `Nissan Iztacalco`, `Chevrolet Iztacalco`).
+  La referencia del WhatsApp usa la primera letra (N-, C-…); se ajusta en `letraCuenta()` de `netlify/lib/autos.mjs`.
+- **Tipo de vehículo** (SUV, Sedán, Hatchback, Pickup, Van) se calcula solo por modelo en `netlify/lib/tipos.mjs`.
+  Si un modelo nuevo sale como "Otro", agrégalo a la lista de su tipo en ese archivo.
+- El inventario muestra 24 autos y un botón **"Ver más"**.
+- Arriba aparecen filas **"Bajaron de precio"** (requiere la columna `Precio anterior`), **"Recién llegados"**
+  (según `Primera vez visto`) y **"Menos de $250,000"**. Una fila solo aparece si tiene 2 autos o más.

@@ -102,6 +102,10 @@
               <select id="f-marca"><option value="">Todas</option></select>
             </label>
             <label class="campo">
+              <span>Tipo de auto</span>
+              <select id="f-carroceria"><option value="">Todos los tipos</option></select>
+            </label>
+            <label class="campo">
               <span>Precio</span>
               <select id="f-precio">
                 <option value="">Todos los precios</option>
@@ -121,6 +125,11 @@
             </div>
           </form>
         </div>
+      </section>
+
+      <!-- Destacados: filas que se deslizan (solo aparecen las que tienen autos) -->
+      <section id="destacados" class="seccion seccion--destacados" aria-label="Destacados" hidden>
+        <div class="contenedor" id="filas-destacadas"></div>
       </section>
 
       <!-- Inventario -->
@@ -150,8 +159,14 @@
             <button type="button" class="tipo" data-tipo="cliente" aria-pressed="false" title="Autos de particulares, solo de contado">Particulares <span class="tipo-n" data-n="cliente"></span></button>
           </div>
 
+          <!-- Tipo de vehículo (SUV, Sedán…), calculado por modelo -->
+          <div id="carrocerias" class="chips chips--fila" role="group" aria-label="Tipo de vehículo" hidden></div>
+
           <div id="filtros-activos" class="filtros-activos" hidden></div>
           <div id="rejilla" class="rejilla"></div>
+          <div id="ver-mas" class="ver-mas" hidden>
+            <button type="button" class="btn btn--fantasma" id="btn-ver-mas"></button>
+          </div>
           <p class="aviso">Precio y disponibilidad sujetos a confirmación.</p>
         </div>
       </section>

@@ -13,7 +13,13 @@ const fmtNum = new Intl.NumberFormat("es-MX");
 const precioTxt = (n) => fmtPrecio.format(n).replace(/\s?MXN/, "").replace("MX", "");
 const waLink = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
 
-const estado = { autos: [], texto: "", marca: "", precio: "", tipo: "", orden: "recientes", hayClientes: false };
+const POR_PAGINA = 24; // autos que se muestran antes del botón "Ver más"
+const ORDEN_CARROCERIAS = ["SUV", "Sedán", "Hatchback", "Pickup", "Van", "Otro"];
+
+const estado = {
+  autos: [], texto: "", marca: "", precio: "", tipo: "", carroceria: "", orden: "recientes",
+  hayClientes: false, lista: [], mostrados: POR_PAGINA,
+};
 
 // ------------------------------------------------------------------
 // Arranque
@@ -78,6 +84,7 @@ async function cargarCatalogo() {
     $("#pie-privado").hidden = !datos.conCodigo;
     iniciarFiltros();
     pintarPortada();
+    pintarDestacados();
     aplicar();
   } catch (e) {
     console.error(e);
@@ -171,6 +178,7 @@ function filtrar() {
   return estado.autos.filter((a) => {
     if (estado.tipo && (a.origen || "agencia") !== estado.tipo) return false;
     if (estado.marca && a.marca !== estado.marca) return false;
+    if (estado.carroceria && (a.tipo || "Otro") !== estado.carroceria) return false;
     if (pMin !== null && (a.precio ?? 0) < pMin) return false;
     if (pMax !== null && (a.precio ?? 0) > pMax) return false;
     return palabras.every((p) => a.buscable.includes(p));
@@ -230,8 +238,37 @@ function iniciarFiltros() {
   $$("#tipos .tipo-n").forEach((s) => (s.textContent = n[s.dataset.n]));
   if (!estado.hayClientes) estado.tipo = "";
 
+  // Tipo de vehículo: select del buscador + chips arriba del inventario (con conteo)
+  const porCarroceria = {};
+  estado.autos.forEach((a) => (porCarroceria[a.tipo || "Otro"] = (porCarroceria[a.tipo || "Otro"] || 0) + 1));
+  const carrocerias = ORDEN_CARROCERIAS.filter((c) => porCarroceria[c]);
+  const selC = $("#f-carroceria");
+  selC.length = 1;
+  carrocerias.forEach((c) => selC.add(new Option(`${c} (${porCarroceria[c]})`, c)));
+  const filaC = $("#carrocerias");
+  filaC.innerHTML = "";
+  filaC.hidden = carrocerias.length < 2;
+  ["", ...carrocerias].forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.dataset.carroceria = c;
+    b.innerHTML = `<span></span> <small></small>`;
+    b.firstChild.textContent = c || "Todos";
+    b.lastChild.textContent = c ? porCarroceria[c] : estado.autos.length;
+    b.addEventListener("click", () => {
+      estado.carroceria = c;
+      $("#f-carroceria").value = c;
+      aplicar();
+    });
+    filaC.append(b);
+  });
+
   if (filtrosListos) return;
   filtrosListos = true;
+
+  $("#f-carroceria").addEventListener("change", (e) => { estado.carroceria = e.target.value; aplicar(); });
+  $("#btn-ver-mas").addEventListener("click", verMas);
 
   $$("#tipos .tipo").forEach((b) =>
     b.addEventListener("click", () => { estado.tipo = b.dataset.tipo; aplicar(); })
@@ -250,7 +287,10 @@ function iniciarFiltros() {
 
 function aplicar() {
   const lista = ordenar(filtrar());
+  estado.lista = lista;
+  estado.mostrados = POR_PAGINA; // al cambiar un filtro se empieza otra vez desde arriba
   pintarRejilla(lista);
+  $$("#carrocerias .chip").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.carroceria === estado.carroceria)));
 
   const total = estado.autos.length;
   $("#resumen").textContent =
@@ -266,6 +306,7 @@ function pintarFiltrosActivos() {
   const activos = [];
   if (estado.texto.trim()) activos.push([`“${estado.texto.trim()}”`, () => { estado.texto = ""; $("#f-texto").value = ""; }]);
   if (estado.marca) activos.push([estado.marca, () => { estado.marca = ""; $("#f-marca").value = ""; }]);
+  if (estado.carroceria) activos.push([estado.carroceria, () => { estado.carroceria = ""; $("#f-carroceria").value = ""; }]);
   $$("#tipos .tipo").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tipo === estado.tipo)));
   if (estado.precio) activos.push([$("#f-precio").selectedOptions[0].text, () => { estado.precio = ""; $("#f-precio").value = ""; }]);
   cont.hidden = activos.length === 0;
@@ -283,8 +324,8 @@ function pintarFiltrosActivos() {
 }
 
 function limpiarFiltros() {
-  Object.assign(estado, { texto: "", marca: "", precio: "", tipo: "" });
-  $("#f-texto").value = ""; $("#f-marca").value = ""; $("#f-precio").value = "";
+  Object.assign(estado, { texto: "", marca: "", precio: "", tipo: "", carroceria: "" });
+  $("#f-texto").value = ""; $("#f-marca").value = ""; $("#f-precio").value = ""; $("#f-carroceria").value = "";
   aplicar();
 }
 
@@ -333,12 +374,99 @@ function pintarRejilla(lista) {
   const rej = $("#rejilla");
   rej.innerHTML = "";
   if (!lista.length) {
+    $("#ver-mas").hidden = true;
     rej.append(vacio("No hay autos con esos filtros.", "Quitar filtros", limpiarFiltros));
     return;
   }
+  agregarTarjetas(0, Math.min(estado.mostrados, lista.length));
+}
+
+// Agrega a la rejilla las tarjetas [desde, hasta) de la lista filtrada y actualiza el botón "Ver más".
+function agregarTarjetas(desde, hasta) {
   const frag = document.createDocumentFragment();
-  lista.forEach((auto, i) => frag.append(crearTarjeta(auto, i)));
-  rej.append(frag);
+  estado.lista.slice(desde, hasta).forEach((auto, k) => {
+    // La animación de entrada se escalona por tanda; solo la primera tarjeta de todas carga su foto sin esperar.
+    frag.append(crearTarjeta(auto, k, desde + k === 0));
+  });
+  $("#rejilla").append(frag);
+
+  const restantes = estado.lista.length - hasta;
+  $("#ver-mas").hidden = restantes <= 0;
+  $("#btn-ver-mas").textContent = `Ver más autos (${restantes} más)`;
+}
+
+function verMas() {
+  const desde = estado.mostrados;
+  estado.mostrados += POR_PAGINA;
+  agregarTarjetas(desde, Math.min(estado.mostrados, estado.lista.length));
+}
+
+// ------------------------------------------------------------------
+// Destacados: filas horizontales arriba del inventario
+// ------------------------------------------------------------------
+function pintarDestacados() {
+  const porPrecio = (a, b) => (a.precio ?? Infinity) - (b.precio ?? Infinity);
+  const recientes = (a, b) => (b.visto || "").localeCompare(a.visto || "") || b.orden - a.orden;
+  const filas = [
+    { titulo: "Bajaron de precio", acento: "de precio", autos: estado.autos.filter((a) => a.bajoPrecio).sort(porPrecio) },
+    { titulo: "Recién llegados", acento: "llegados", autos: estado.autos.filter((a) => a.nuevo).sort(recientes) },
+    {
+      titulo: "Menos de $250,000", acento: "$250,000",
+      autos: estado.autos.filter((a) => a.precio > 0 && a.precio <= 250000).sort(porPrecio),
+      verTodos: () => { estado.precio = "0-250000"; $("#f-precio").value = "0-250000"; aplicar(); },
+    },
+  ].filter((f) => f.autos.length >= 2); // una fila con un solo auto se ve vacía
+
+  const cont = $("#filas-destacadas");
+  cont.innerHTML = "";
+  $("#destacados").hidden = filas.length === 0;
+
+  filas.forEach((f) => {
+    const sec = document.createElement("div");
+    sec.className = "fila-destacada";
+    const h = document.createElement("div");
+    h.className = "fila-cabeza";
+    h.innerHTML = `<h2 class="fila-titulo"></h2><span class="fila-n"></span>`;
+    // Título con la última parte en color de acento
+    const t = h.querySelector("h2");
+    const corte = f.titulo.lastIndexOf(f.acento);
+    t.append(f.titulo.slice(0, corte));
+    const acento = document.createElement("span");
+    acento.className = "acento";
+    acento.textContent = f.acento;
+    t.append(acento);
+    h.querySelector(".fila-n").textContent = `${f.autos.length} autos`;
+    if (f.verTodos) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "enlace fila-ver";
+      b.textContent = "Ver todos";
+      b.addEventListener("click", () => {
+        f.verTodos();
+        $("#inventario").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      });
+      h.append(b);
+    }
+    const carril = document.createElement("div");
+    carril.className = "carril";
+    f.autos.slice(0, 12).forEach((auto, k) => carril.append(crearTarjeta(auto, k, false)));
+
+    // Flechas para computadora (en celular se desliza con el dedo y se ocultan por CSS)
+    const flechas = document.createElement("div");
+    flechas.className = "fila-flechas";
+    [["‹", -1, "anteriores"], ["›", 1, "siguientes"]].forEach(([simbolo, dir, txt]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "fila-flecha";
+      b.textContent = simbolo;
+      b.setAttribute("aria-label", `Ver autos ${txt}`);
+      b.addEventListener("click", () => carril.scrollBy({ left: dir * carril.clientWidth * 0.9 }));
+      flechas.append(b);
+    });
+    h.append(flechas);
+    sec.append(h, carril);
+    cont.append(sec);
+  });
 }
 
 function vacio(texto, boton, accion) {
@@ -357,7 +485,8 @@ const ICO = {
   km: '<svg class="ico" viewBox="0 0 24 24"><path d="M4.5 16a8 8 0 1 1 15 0"/><path d="M12 14l4-5"/><circle cx="12" cy="14" r="1.3"/></svg>',
 };
 
-function crearTarjeta(auto, i) {
+// i: posición dentro de la tanda (para escalonar la animación) · prioridad: cargar la 1.ª foto sin esperar
+function crearTarjeta(auto, i, prioridad = false) {
   const t = $("#tpl-tarjeta").content.firstElementChild.cloneNode(true);
   t.style.setProperty("--i", Math.min(i, 8));
 
@@ -391,7 +520,7 @@ function crearTarjeta(auto, i) {
   wa.href = waLink(`Hola, me interesa el ${auto.titulo}${esCliente ? ", particular de contado" : ""}${ref}`);
   wa.setAttribute("aria-label", `Preguntar por WhatsApp por el ${auto.titulo}`);
 
-  montarCarrusel(t, auto, i === 0);
+  montarCarrusel(t, auto, prioridad);
   return t;
 }
 

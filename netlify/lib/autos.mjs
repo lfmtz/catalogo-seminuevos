@@ -1,5 +1,6 @@
 // Convierte las filas del Sheet en autos listos para mostrar.
 // Las columnas se buscan por NOMBRE de encabezado, así que el orden puede cambiar sin romper nada.
+import { tipoVehiculo } from "./tipos.mjs";
 
 // Marcas con escritura especial (la primera palabra del título es la marca).
 const MARCAS_ESPECIALES = {
@@ -136,6 +137,7 @@ export function filasAAutos(filas, origen = "agencia") {
       titulo,
       marca,
       modelo,
+      tipo: tipoVehiculo(marca, modelo, titulo),
       version,
       anio,
       precio,
