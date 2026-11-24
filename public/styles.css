@@ -250,9 +250,10 @@ button, input, select { font: inherit; color: inherit; }
   .tarjeta:hover .flecha { opacity: 1; }
 }
 
-.tarjeta-media { position: relative; aspect-ratio: 4 / 3; background: var(--tarjeta-2); }
+/* Proporción fija 4:3 para TODAS las fotos. min-height:0 + overflow evitan que una foto vertical estire el recuadro. */
+.tarjeta-media { position: relative; aspect-ratio: 4 / 3; min-height: 0; overflow: hidden; background: var(--tarjeta-2); }
 .carrusel {
-  display: flex; height: 100%;
+  position: absolute; inset: 0; display: flex;
   overflow-x: auto; overflow-y: hidden;
   scroll-snap-type: x mandatory; scroll-behavior: smooth;
   overscroll-behavior-x: contain;
