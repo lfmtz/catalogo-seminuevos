@@ -557,6 +557,9 @@ function montarCarrusel(t, auto, prioridad) {
     actualizar();
   };
 
+  // Ahorro de datos: solo la 1.ª foto se descarga al abrir la página.
+  // Las demás esperan en data-src hasta que el cliente toca, pasa el mouse o desliza ese carrusel.
+  const pendientes = [];
   auto.fotos.forEach((src, n) => {
     const fig = document.createElement("div");
     fig.className = "foto";
@@ -570,10 +573,22 @@ function montarCarrusel(t, auto, prioridad) {
     img.onload = () => fig.classList.add("lista");
     // Foto rota: se quita del carrusel; si no queda ninguna, se muestra el placeholder.
     img.onerror = () => { fig.replaceWith(); refrescar(); };
-    img.src = src;
+    if (n === 0) img.src = src;
+    else { img.dataset.src = src; pendientes.push(img); }
     fig.append(img);
     car.append(fig);
   });
+
+  const cargarResto = () => {
+    pendientes.splice(0).forEach((img) => { img.loading = "eager"; img.src = img.dataset.src; });
+  };
+  if (pendientes.length) {
+    // touchstart llega antes del deslizamiento: la 2.ª foto ya viene en camino cuando aparece.
+    ["touchstart", "pointerenter", "focusin", "scroll"].forEach((ev) =>
+      (ev === "pointerenter" ? t : car).addEventListener(ev, cargarResto, { once: true, passive: true })
+    );
+    [izq, der].forEach((b) => b.addEventListener("click", cargarResto, { once: true }));
+  }
 
   car.addEventListener("scroll", () => requestAnimationFrame(actualizar), { passive: true });
   izq.addEventListener("click", () => car.scrollBy({ left: -car.clientWidth }));

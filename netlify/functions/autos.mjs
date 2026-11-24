@@ -36,7 +36,16 @@ export default async (req) => {
     }
     // Quitamos el campo interno "fila" antes de mandarlo al navegador.
     const autos = cache.autos.map(({ fila, ...a }) => ({ ...a, orden: fila }));
-    return json({ autos, actualizado: new Date(cache.hora).toISOString(), conCodigo });
+    const cuerpo = { autos, actualizado: new Date(cache.hora).toISOString(), conCodigo };
+    if (conCodigo) return json(cuerpo); // con código: cada respuesta es privada, sin caché
+
+    // Acceso libre: la respuesta es igual para todos → la guarda la red de Netlify (CDN).
+    // 5 min "fresca"; después se sirve la copia guardada al instante mientras se renueva en segundo plano.
+    // Así casi ningún cliente espera a que se lea Google Sheets.
+    return json(cuerpo, 200, {
+      "Cache-Control": "public, max-age=60",
+      "Netlify-CDN-Cache-Control": "public, durable, s-maxage=300, stale-while-revalidate=86400",
+    });
   } catch (e) {
     console.error(e);
     // El código corto ayuda a diagnosticar sin exponer datos sensibles.
