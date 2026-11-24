@@ -396,7 +396,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 
 /* Que la barra fija no tape los títulos al saltar a una sección */
-section[id] { scroll-margin-top: 72px; }
+section[id] { scroll-margin-top: 96px; }
 
 /* Anchos del esqueleto (en clases: la política de seguridad bloquea estilos en línea) */
 .barra-esq--1 { width: 30%; }
