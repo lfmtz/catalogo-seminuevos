@@ -48,7 +48,10 @@ async function cargarCatalogo() {
     if (r.status === 401) { yaEntro.set(false); return mostrarAcceso(); }
     yaEntro.set(true);
     mostrarCatalogo();
-    if (!r.ok) throw new Error("HTTP " + r.status);
+    if (!r.ok) {
+      const d = await r.json().catch(() => ({}));
+      throw new Error(d.codigo || "HTTP " + r.status);
+    }
     const datos = await r.json();
     estado.autos = prepararAutos(datos.autos || []);
     pintarFecha(datos.actualizado);
@@ -59,7 +62,7 @@ async function cargarCatalogo() {
     console.error(e);
     mostrarCatalogo();
     $("#rejilla").innerHTML = "";
-    $("#rejilla").append(vacio("No pudimos cargar el inventario. Intenta de nuevo en un momento.", "Reintentar", cargarCatalogo));
+    $("#rejilla").append(vacio(`No pudimos cargar el inventario. Intenta de nuevo en un momento. (código: ${e.message})`, "Reintentar", cargarCatalogo));
   }
 }
 
@@ -283,7 +286,7 @@ function pintarEsqueletos() {
     const t = document.createElement("div");
     t.className = "tarjeta tarjeta--esqueleto";
     t.setAttribute("aria-hidden", "true");
-    t.innerHTML = `<div class="tarjeta-media"></div><div class="tarjeta-cuerpo"><div class="barra-esq" style="width:30%"></div><div class="barra-esq" style="width:60%;height:18px"></div><div class="barra-esq" style="width:45%"></div><div class="barra-esq" style="width:40%;height:22px;margin-top:18px"></div></div>`;
+    t.innerHTML = `<div class="tarjeta-media"></div><div class="tarjeta-cuerpo"><div class="barra-esq barra-esq--1"></div><div class="barra-esq barra-esq--2"></div><div class="barra-esq barra-esq--3"></div><div class="barra-esq barra-esq--4"></div></div>`;
     rej.append(t);
   }
 }

@@ -397,3 +397,9 @@ button, input, select { font: inherit; color: inherit; }
 
 /* Que la barra fija no tape los títulos al saltar a una sección */
 section[id] { scroll-margin-top: 72px; }
+
+/* Anchos del esqueleto (en clases: la política de seguridad bloquea estilos en línea) */
+.barra-esq--1 { width: 30%; }
+.barra-esq--2 { width: 60%; height: 18px; }
+.barra-esq--3 { width: 45%; }
+.barra-esq--4 { width: 40%; height: 22px; margin-top: 18px; }

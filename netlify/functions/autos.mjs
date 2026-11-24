@@ -24,7 +24,8 @@ export default async (req) => {
     return json({ autos, actualizado: new Date(cache.hora).toISOString() });
   } catch (e) {
     console.error(e);
-    return json({ error: "No se pudo cargar el inventario" }, 502);
+    // El código corto ayuda a diagnosticar sin exponer datos sensibles.
+    return json({ error: "No se pudo cargar el inventario", codigo: e.codigo || "desconocido" }, 502);
   }
 };
 
