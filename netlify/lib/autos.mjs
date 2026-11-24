@@ -51,7 +51,15 @@ function fecha(v) {
 function urlFoto(v) {
   const t = String(v ?? "").trim();
   // Solo enlaces https; cualquier otra cosa se descarta.
-  return /^https:\/\/[^\s"'<>]+$/i.test(t) ? t : null;
+  if (!/^https:\/\/[^\s"'<>]+$/i.test(t)) return null;
+
+  // Links de Google Drive ("Compartir → Cualquier persona con el enlace") → imagen directa.
+  // Acepta .../file/d/ID/view, .../open?id=ID y .../uc?id=ID
+  const drive =
+    t.match(/^https:\/\/drive\.google\.com\/file\/d\/([\w-]{10,})/) ||
+    t.match(/^https:\/\/drive\.google\.com\/(?:open|uc)\?(?:.*&)?id=([\w-]{10,})/);
+  if (drive) return `https://drive.google.com/thumbnail?id=${drive[1]}&sz=w1600`;
+  return t;
 }
 
 const verdadero = (v) => ["si", "sí", "true", "1", "x", "verdadero"].includes(normalizar(v));
@@ -71,8 +79,10 @@ export function partirTitulo(titulo) {
   return { marca, modelo, anio, version };
 }
 
-export function filasAAutos(filas) {
+// origen: "agencia" (pestaña de Mercado Libre) o "cliente" (pestaña "Clientes", autos de particulares).
+export function filasAAutos(filas, origen = "agencia") {
   if (!filas.length) return [];
+  const esCliente = origen === "cliente";
   const enc = filas[0];
   const col = {
     id: buscarColumna(enc, "id publicacion", "id"),
@@ -80,9 +90,10 @@ export function filasAAutos(filas) {
     precio: buscarColumna(enc, "precio (mxn)", "precio"),
     km: buscarColumna(enc, "km", "kilometraje"),
     estado: buscarColumna(enc, "estado"),
-    visto: buscarColumna(enc, "primera vez visto", "primera vez"),
+    visto: buscarColumna(enc, "primera vez visto", "primera vez", "fecha de alta", "fecha"),
     anterior: buscarColumna(enc, "precio anterior"),
     bajo: buscarColumna(enc, "bajo de precio", "bajo precio"),
+    pago: buscarColumna(enc, "forma de pago", "pago"),
   };
   const colFotos = enc
     .map((h, i) => (/^foto\s*\d+$/.test(normalizar(h)) ? i : -1))
@@ -92,14 +103,21 @@ export function filasAAutos(filas) {
   filas.slice(1).forEach((f, fila) => {
     const estado = normalizar(f[col.estado]);
     const titulo = String(f[col.titulo] ?? "").trim();
-    if (estado !== "activa" || !titulo) return;
+    if (!titulo) return;
+    // Agencia: solo "Activa". Clientes: también se muestra si Estado está vacío
+    // (para que Luis solo escriba "Vendida" cuando ya no esté disponible).
+    if (!(estado === "activa" || (esCliente && estado === ""))) return;
 
     const precio = numero(f[col.precio]);
     const anterior = col.anterior !== -1 ? numero(f[col.anterior]) : null;
     const { marca, modelo, anio, version } = partirTitulo(titulo);
 
+    const pagoTexto = col.pago !== -1 ? String(f[col.pago] ?? "").trim() : "";
     autos.push({
-      id: String(f[col.id] ?? fila),
+      id: esCliente ? `C${fila + 2}` : String(col.id !== -1 && f[col.id] ? f[col.id] : `A${fila + 2}`),
+      origen,
+      // Particulares: de contado salvo que la columna "Forma de pago" diga otra cosa.
+      pago: pagoTexto || (esCliente ? "Contado" : ""),
       titulo,
       marca,
       modelo,

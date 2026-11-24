@@ -18,11 +18,21 @@ export default async (req) => {
 
   try {
     if (!cache.autos || Date.now() - cache.hora > CACHE_MS) {
-      const filas = await leerHoja(
-        process.env.SHEET_ID || ID_HOJA_DEFAULT,
-        `${process.env.SHEET_TAB || "Hoja 1"}!A1:Z500`
-      );
-      cache = { autos: filasAAutos(filas), hora: Date.now() };
+      const idHoja = process.env.SHEET_ID || ID_HOJA_DEFAULT;
+      const pestanaClientes = process.env.SHEET_TAB_CLIENTES || "Clientes";
+      const [agencia, clientes] = await Promise.all([
+        // Pestaña de Mercado Libre (obligatoria)
+        leerHoja(idHoja, `${process.env.SHEET_TAB || "Hoja 1"}!A1:Z500`),
+        // Pestaña de autos de clientes (opcional: si no existe, se ignora)
+        leerHoja(idHoja, `${pestanaClientes}!A1:Z300`).catch((e) => {
+          console.warn(`Pestaña "${pestanaClientes}" no disponible:`, e.message);
+          return [];
+        }),
+      ]);
+      cache = {
+        autos: [...filasAAutos(agencia, "agencia"), ...filasAAutos(clientes, "cliente")],
+        hora: Date.now(),
+      };
     }
     // Quitamos el campo interno "fila" antes de mandarlo al navegador.
     const autos = cache.autos.map(({ fila, ...a }) => ({ ...a, orden: fila }));

@@ -69,7 +69,7 @@
               Inventario actualizado <span id="fecha-actualizado"></span>
             </span>
             <h1 class="titulo-grande">Encuentra tu<br><span class="acento">próximo auto</span></h1>
-            <p class="portada-sub">Seminuevos de agencia, con fotos y precio actualizados todos los días. Escoge el que te guste y te ayudo con todo el trámite.</p>
+            <p class="portada-sub">Seminuevos de agencia y de particulares, con fotos y precio actualizados todos los días. Escoge el que te guste y te ayudo con todo el trámite.</p>
             <div class="portada-acciones">
               <a href="#inventario" class="btn btn--primario">
                 Ver inventario
@@ -143,6 +143,13 @@
             </div>
           </div>
 
+          <!-- Tipo de auto: solo aparece si hay autos de clientes en la hoja -->
+          <div id="tipos" class="tipos" role="group" aria-label="Tipo de auto" hidden>
+            <button type="button" class="tipo" data-tipo="" aria-pressed="true">Todos <span class="tipo-n" data-n=""></span></button>
+            <button type="button" class="tipo" data-tipo="agencia" aria-pressed="false">Agencia <span class="tipo-n" data-n="agencia"></span></button>
+            <button type="button" class="tipo" data-tipo="cliente" aria-pressed="false" title="Autos de particulares, solo de contado">Particulares <span class="tipo-n" data-n="cliente"></span></button>
+          </div>
+
           <div id="filtros-activos" class="filtros-activos" hidden></div>
           <div id="rejilla" class="rejilla"></div>
           <p class="aviso">Precio y disponibilidad sujetos a confirmación.</p>
@@ -187,7 +194,10 @@
         <div class="puntos" aria-hidden="true"></div>
       </div>
       <div class="tarjeta-cuerpo">
-        <span class="tarjeta-marca"></span>
+        <div class="tarjeta-linea">
+          <span class="tarjeta-marca"></span>
+          <span class="origen" hidden></span>
+        </div>
         <h3 class="tarjeta-modelo"></h3>
         <p class="tarjeta-version"></p>
         <ul class="tarjeta-datos"></ul>

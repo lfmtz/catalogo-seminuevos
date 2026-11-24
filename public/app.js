@@ -13,7 +13,7 @@ const fmtNum = new Intl.NumberFormat("es-MX");
 const precioTxt = (n) => fmtPrecio.format(n).replace(/\s?MXN/, "").replace("MX", "");
 const waLink = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
 
-const estado = { autos: [], texto: "", marca: "", precio: "", orden: "recientes" };
+const estado = { autos: [], texto: "", marca: "", precio: "", tipo: "", orden: "recientes", hayClientes: false };
 
 // ------------------------------------------------------------------
 // Arranque
@@ -169,6 +169,7 @@ function filtrar() {
   const palabras = normalizar(estado.texto).split(/\s+/).filter(Boolean);
   const [pMin, pMax] = estado.precio ? estado.precio.split("-").map((v) => (v === "" ? null : Number(v))) : [null, null];
   return estado.autos.filter((a) => {
+    if (estado.tipo && (a.origen || "agencia") !== estado.tipo) return false;
     if (estado.marca && a.marca !== estado.marca) return false;
     if (pMin !== null && (a.precio ?? 0) < pMin) return false;
     if (pMax !== null && (a.precio ?? 0) > pMax) return false;
@@ -221,8 +222,20 @@ function iniciarFiltros() {
       chips.append(b);
     });
 
+  // Pestañas Todos / Agencia / Particulares (solo si hay autos de clientes)
+  const nClientes = estado.autos.filter((a) => a.origen === "cliente").length;
+  estado.hayClientes = nClientes > 0;
+  $("#tipos").hidden = !estado.hayClientes;
+  const n = { "": estado.autos.length, agencia: estado.autos.length - nClientes, cliente: nClientes };
+  $$("#tipos .tipo-n").forEach((s) => (s.textContent = n[s.dataset.n]));
+  if (!estado.hayClientes) estado.tipo = "";
+
   if (filtrosListos) return;
   filtrosListos = true;
+
+  $$("#tipos .tipo").forEach((b) =>
+    b.addEventListener("click", () => { estado.tipo = b.dataset.tipo; aplicar(); })
+  );
 
   $("#f-texto").addEventListener("input", (e) => { estado.texto = e.target.value; aplicar(); });
   $("#f-marca").addEventListener("change", (e) => { estado.marca = e.target.value; aplicar(); });
@@ -253,6 +266,7 @@ function pintarFiltrosActivos() {
   const activos = [];
   if (estado.texto.trim()) activos.push([`“${estado.texto.trim()}”`, () => { estado.texto = ""; $("#f-texto").value = ""; }]);
   if (estado.marca) activos.push([estado.marca, () => { estado.marca = ""; $("#f-marca").value = ""; }]);
+  $$("#tipos .tipo").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tipo === estado.tipo)));
   if (estado.precio) activos.push([$("#f-precio").selectedOptions[0].text, () => { estado.precio = ""; $("#f-precio").value = ""; }]);
   cont.hidden = activos.length === 0;
   activos.forEach(([txt, quitar]) => {
@@ -269,7 +283,7 @@ function pintarFiltrosActivos() {
 }
 
 function limpiarFiltros() {
-  Object.assign(estado, { texto: "", marca: "", precio: "" });
+  Object.assign(estado, { texto: "", marca: "", precio: "", tipo: "" });
   $("#f-texto").value = ""; $("#f-marca").value = ""; $("#f-precio").value = "";
   aplicar();
 }
@@ -360,8 +374,19 @@ function crearTarjeta(auto, i) {
   if (auto.bajoPrecio) etq.insertAdjacentHTML("beforeend", `<span class="etiqueta etiqueta--baja">Bajó de precio</span>`);
   else if (auto.nuevo) etq.insertAdjacentHTML("beforeend", `<span class="etiqueta etiqueta--nuevo">Recién llegado</span>`);
 
+  // Origen: agencia o particular (de un cliente de Luis). Solo se marca si hay de los dos tipos.
+  const esCliente = auto.origen === "cliente";
+  if (estado.hayClientes) {
+    const o = $(".origen", t);
+    o.hidden = false;
+    o.classList.add(esCliente ? "origen--cliente" : "origen--agencia");
+    o.textContent = esCliente
+      ? `Particular · ${/^contado$/i.test(auto.pago) ? "Solo contado" : auto.pago}`
+      : "Agencia";
+  }
+
   const wa = $(".tarjeta-wa", t);
-  wa.href = waLink(`Hola, me interesa el ${auto.titulo}`);
+  wa.href = waLink(`Hola, me interesa el ${auto.titulo}${esCliente ? " (particular, de contado)" : ""}`);
   wa.setAttribute("aria-label", `Preguntar por WhatsApp por el ${auto.titulo}`);
 
   montarCarrusel(t, auto, i === 0);
