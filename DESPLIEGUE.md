@@ -97,3 +97,29 @@ La app busca las columnas **por nombre de encabezado** (el orden no importa):
 > "Fotos próximamente".
 
 La app guarda la lectura del Sheet 5 minutos para ir rápido; un cambio en la hoja tarda como máximo eso en verse.
+
+---
+
+## Autos de clientes (particulares, de contado)
+
+Van en la pestaña **`Clientes`** de la misma hoja. La tarea diaria de Mercado Libre solo usa `Hoja 1`, así que no se mezclan.
+
+| Columna | Qué poner |
+|---|---|
+| `Título` | Igual que en Mercado Libre: **Marca Modelo Año Versión** (ej. `Honda Civic 2019 2.0 Ex Cvt`) |
+| `Precio (MXN)` | Solo el número, sin `$` ni comas (ej. `245000`) |
+| `Km` | Solo el número |
+| `Estado` | Vacío o `Activa` = se muestra · `Vendida` / `Apartada` = no se muestra |
+| `Fecha de alta` | `2026-11-24` (sirve para "Más recientes" y "Recién llegado") |
+| `Foto 1` … `Foto 5` | Link de Google Drive de cada foto (ver abajo) o cualquier link `https://` de imagen |
+| `Forma de pago` | Vacío = **Contado**. Si escribes otra cosa (ej. `Contado o crédito`), eso aparece en la etiqueta |
+| `Notas internas` | Datos del dueño, teléfono, etc. **Nunca** salen en el catálogo |
+
+La fila 2 (gris, Estado = `Ejemplo`) es de muestra y no se publica.
+
+### Fotos con Google Drive
+1. Crea una carpeta en Drive, p. ej. `Fotos clientes`, y sube las fotos.
+2. Clic derecho en la carpeta → **Compartir** → Acceso general: **Cualquier persona con el enlace** → Lector.
+3. Abre cada foto → **⋮** → **Compartir** → **Copiar vínculo** y pégalo en `Foto 1`, `Foto 2`…
+
+Los cambios aparecen en el catálogo en máximo 5 minutos.
