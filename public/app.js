@@ -13,7 +13,7 @@ const fmtNum = new Intl.NumberFormat("es-MX");
 const precioTxt = (n) => fmtPrecio.format(n).replace(/\s?MXN/, "").replace("MX", "");
 const waLink = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
 
-const POR_PAGINA = 24; // autos que se muestran antes del botón "Ver más"
+const POR_PAGINA = 20; // autos que se muestran antes del botón "Ver más"
 const ORDEN_CARROCERIAS = ["SUV", "Sedán", "Hatchback", "Pickup", "Van", "Otro"];
 
 const estado = {

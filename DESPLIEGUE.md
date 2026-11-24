@@ -132,6 +132,6 @@ Los cambios aparecen en el catálogo en máximo 5 minutos.
   La referencia del WhatsApp usa la primera letra (N-, C-…); se ajusta en `letraCuenta()` de `netlify/lib/autos.mjs`.
 - **Tipo de vehículo** (SUV, Sedán, Hatchback, Pickup, Van) se calcula solo por modelo en `netlify/lib/tipos.mjs`.
   Si un modelo nuevo sale como "Otro", agrégalo a la lista de su tipo en ese archivo.
-- El inventario muestra 24 autos y un botón **"Ver más"**.
+- El inventario muestra 20 autos y un botón **"Ver más"**.
 - Arriba aparecen filas **"Bajaron de precio"** (requiere la columna `Precio anterior`), **"Recién llegados"**
   (según `Primera vez visto`) y **"Menos de $250,000"**. Una fila solo aparece si tiene 2 autos o más.

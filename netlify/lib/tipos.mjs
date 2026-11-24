@@ -9,6 +9,8 @@ const TIPOS = {
     // Chevrolet / GMC / Cadillac
     "captiva", "groove", "tracker", "trax", "equinox", "blazer", "traverse", "tahoe", "suburban", "trailblazer",
     "acadia", "terrain", "yukon", "escalade", "xt4", "xt5", "xt6",
+    // Buick
+    "enclave", "encore", "envision", "envista",
     // VW / SEAT / CUPRA
     "tiguan", "taos", "tcross", "teramont", "touareg", "troc", "nivus", "arona", "ateca", "tarraco", "formentor",
     // Kia / Hyundai
