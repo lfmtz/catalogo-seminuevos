@@ -59,11 +59,11 @@ Después: **Deploys** → **Trigger deploy** → **Deploy site** para que tome l
 
 ## Paso 4. Probar y compartir
 
-- Abre el link de Netlify (p. ej. `https://catalogo-luis.netlify.app`) y escribe el código.
+- Abre el link de Netlify (p. ej. `https://seminuevos-catalogo.netlify.app`) y escribe el código.
 - Para que tus clientes no tengan que teclear el código, comparte el link así:
 
   ```
-  https://catalogo-luis.netlify.app/#codigo=IZTA2026
+  https://seminuevos-catalogo.netlify.app/#codigo=TU_CODIGO
   ```
 
   Entra directo y el código se borra de la barra de direcciones.

@@ -27,7 +27,8 @@ export function iguales(a, b) {
 export function codigoValido(codigo) {
   const esperado = process.env.CODIGO_ACCESO;
   if (!esperado) throw new Error("Falta CODIGO_ACCESO en las variables de entorno");
-  return typeof codigo === "string" && iguales(codigo.trim(), esperado.trim());
+  // Sin distinguir mayúsculas/minúsculas: así nadie batalla al teclearlo en el celular.
+  return typeof codigo === "string" && iguales(codigo.trim().toLowerCase(), esperado.trim().toLowerCase());
 }
 
 export function crearCookie() {

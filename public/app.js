@@ -23,16 +23,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("#form-acceso").addEventListener("submit", alEnviarCodigo);
   $("#btn-salir").addEventListener("click", salir);
 
-  // Link con el código incluido: https://.../#codigo=XXXX
-  // (lo que va después de # no viaja al servidor ni queda en registros)
-  const m = location.hash.match(/codigo=([^&]+)/);
-  if (m) {
-    history.replaceState(null, "", location.pathname + location.search);
-    const ok = await entrar(decodeURIComponent(m[1]));
+  // Link con el código incluido. Se aceptan varias formas para que nadie batalle:
+  //   https://.../#codigo=XXXX  (recomendada: lo que va después de # no viaja al servidor)
+  //   https://.../#c=XXXX   ·   https://.../?codigo=XXXX   ·   https://.../?c=XXXX
+  const codigoLink = leerCodigoDelLink();
+  if (codigoLink) {
+    // Se borra el código de la barra de direcciones en cuanto se lee.
+    history.replaceState(null, "", location.pathname);
+    const ok = await entrar(codigoLink, { silencioso: true });
     if (ok) return;
+    // El código del link no sirvió (p. ej. Luis lo cambió). Si el teléfono ya tenía sesión, entra igual;
+    // si no, se muestra la pantalla de acceso con un aviso claro.
+    const r = await fetch("/api/autos", { credentials: "same-origin" }).catch(() => null);
+    if (r && r.ok) return cargarCatalogo();
+    mostrarAcceso();
+    errorAcceso("Este link ya no es válido. Escribe el código o pídele a Luis un link nuevo.");
+    return;
   }
   cargarCatalogo();
 });
+
+function leerCodigoDelLink() {
+  const params = new URLSearchParams(location.hash.slice(1));
+  const query = new URLSearchParams(location.search);
+  const crudo = params.get("codigo") || params.get("c") || query.get("codigo") || query.get("c") || "";
+  // Quita espacios y signos que a veces se pegan al final al copiar el link de un mensaje.
+  return crudo.trim().replace(/[.,;:!?)\]}>"'»]+$/, "");
+}
 
 // Recordamos (solo como pista visual) si este teléfono ya entró antes,
 // para mostrar el esqueleto del catálogo en vez de un parpadeo de la pantalla de acceso.
@@ -79,7 +96,8 @@ function mostrarCatalogo() {
 // ------------------------------------------------------------------
 // Acceso
 // ------------------------------------------------------------------
-async function entrar(codigo) {
+// silencioso: true → si falla, no muestra nada (lo decide quien llama; se usa con el link).
+async function entrar(codigo, { silencioso = false } = {}) {
   try {
     const r = await fetch("/api/login", {
       method: "POST",
@@ -91,9 +109,11 @@ async function entrar(codigo) {
       cargarCatalogo();
       return true;
     }
+    if (silencioso) return false;
     const d = await r.json().catch(() => ({}));
     errorAcceso(d.error || "No se pudo entrar");
   } catch {
+    if (silencioso) return false;
     errorAcceso("Sin conexión. Revisa tu internet.");
   }
   mostrarAcceso();
