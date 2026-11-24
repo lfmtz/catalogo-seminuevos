@@ -62,6 +62,14 @@ function urlFoto(v) {
   return t;
 }
 
+// "Nissan Iztacalco" → N · "Chevrolet Iztacalco" → C · vacío → A (agencia sin especificar)
+function letraCuenta(v) {
+  const t = normalizar(v);
+  if (t.includes("nissan")) return "N";
+  if (t.includes("chevrolet") || t.includes("chevy")) return "C";
+  return t ? t.charAt(0).toUpperCase() : "A";
+}
+
 const verdadero = (v) => ["si", "sí", "true", "1", "x", "verdadero"].includes(normalizar(v));
 
 export function partirTitulo(titulo) {
@@ -94,6 +102,7 @@ export function filasAAutos(filas, origen = "agencia") {
     anterior: buscarColumna(enc, "precio anterior"),
     bajo: buscarColumna(enc, "bajo de precio", "bajo precio"),
     pago: buscarColumna(enc, "forma de pago", "pago"),
+    cuenta: buscarColumna(enc, "cuenta", "agencia"),
   };
   const colFotos = enc
     .map((h, i) => (/^foto\s*\d+$/.test(normalizar(h)) ? i : -1))
@@ -113,9 +122,15 @@ export function filasAAutos(filas, origen = "agencia") {
     const { marca, modelo, anio, version } = partirTitulo(titulo);
 
     const pagoTexto = col.pago !== -1 ? String(f[col.pago] ?? "").trim() : "";
+    const id = esCliente
+      ? `P${fila + 2}`
+      : String(col.id !== -1 && f[col.id] ? f[col.id] : `A${fila + 2}`);
     autos.push({
-      id: esCliente ? `C${fila + 2}` : String(col.id !== -1 && f[col.id] ? f[col.id] : `A${fila + 2}`),
+      id,
       origen,
+      // Referencia discreta para el WhatsApp de Luis: N = Nissan, C = Chevrolet, P = particular.
+      // El nombre de la agencia NO se manda al navegador.
+      ref: `${esCliente ? "P" : letraCuenta(col.cuenta !== -1 ? f[col.cuenta] : "")}-${id.replace(/^[AP]/, "")}`,
       // Particulares: de contado salvo que la columna "Forma de pago" diga otra cosa.
       pago: pagoTexto || (esCliente ? "Contado" : ""),
       titulo,

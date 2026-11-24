@@ -386,7 +386,9 @@ function crearTarjeta(auto, i) {
   }
 
   const wa = $(".tarjeta-wa", t);
-  wa.href = waLink(`Hola, me interesa el ${auto.titulo}${esCliente ? " (particular, de contado)" : ""}`);
+  // La referencia (N- Nissan, C- Chevrolet, P- particular + ID) le dice a Luis de qué agencia es.
+  const ref = auto.ref ? ` (Ref. ${auto.ref})` : "";
+  wa.href = waLink(`Hola, me interesa el ${auto.titulo}${esCliente ? ", particular de contado" : ""}${ref}`);
   wa.setAttribute("aria-label", `Preguntar por WhatsApp por el ${auto.titulo}`);
 
   montarCarrusel(t, auto, i === 0);
