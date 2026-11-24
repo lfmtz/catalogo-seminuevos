@@ -483,6 +483,28 @@ function vacio(texto, boton, accion) {
 const ICO = {
   anio: '<svg class="ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
   km: '<svg class="ico" viewBox="0 0 24 24"><path d="M4.5 16a8 8 0 1 1 15 0"/><path d="M12 14l4-5"/><circle cx="12" cy="14" r="1.3"/></svg>',
+  transmision: '<svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6 8v8M12 8v8M18 8v4H6"/></svg>',
+  motor: '<svg class="ico" viewBox="0 0 24 24"><path d="M4 10h2l2-3h6l2 3h2v3h2v-2h1v6h-1v-2h-2v3h-3l-2 2H9l-2-2H4z"/></svg>',
+  pasajeros: '<svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.6a3.2 3.2 0 0 1 0 6.3M18 14.3c1.8.8 3 2.6 3 4.7"/></svg>',
+  estado: '<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.2l2.4 2.4 4.6-4.9"/></svg>',
+  financia: '<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>',
+};
+
+// Un renglón de la ficha. El texto se pone con textContent (puede venir de la hoja).
+function dato(icono, texto, clase = "") {
+  const li = document.createElement("li");
+  if (clase) li.className = clase;
+  li.innerHTML = ICO[icono];
+  const s = document.createElement("span");
+  s.textContent = texto;
+  li.append(s);
+  return li;
+}
+
+const FINANCIAMIENTO = {
+  si: ["Se puede financiar", "fin--si"],
+  consultar: ["Pregunta por opciones de pago", "fin--consultar"],
+  contado: ["Solo contado", "fin--contado"],
 };
 
 // i: posición dentro de la tanda (para escalonar la animación) · prioridad: cargar la 1.ª foto sin esperar
@@ -495,9 +517,26 @@ function crearTarjeta(auto, i, prioridad = false) {
   $(".tarjeta-version", t).textContent = auto.version || "";
   $(".tarjeta-precio", t).textContent = auto.precio ? precioTxt(auto.precio) : "Consultar";
 
+  // Ficha: año, km, transmisión, motor, pasajeros y estado (cada renglón solo si hay dato)
   const datos = $(".tarjeta-datos", t);
-  if (auto.anio) datos.insertAdjacentHTML("beforeend", `<li>${ICO.anio}<span>${auto.anio}</span></li>`);
-  if (auto.km !== null && auto.km !== undefined) datos.insertAdjacentHTML("beforeend", `<li>${ICO.km}<span>${fmtNum.format(auto.km)} km</span></li>`);
+  if (auto.anio) datos.append(dato("anio", auto.anio));
+  if (auto.km !== null && auto.km !== undefined) datos.append(dato("km", `${fmtNum.format(auto.km)} km`));
+  if (auto.transmision) datos.append(dato("transmision", auto.transmision));
+  if (auto.motor) datos.append(dato("motor", auto.motor));
+  if (auto.pasajeros) datos.append(dato("pasajeros", `${auto.pasajeros} pasajeros`));
+  if (auto.estado) datos.append(dato("estado", auto.estado, "dato--estado"));
+
+  // Financiamiento: regla de los 6 años; particulares, solo contado
+  const fin = FINANCIAMIENTO[auto.financiamiento];
+  if (fin) {
+    const p = document.createElement("p");
+    p.className = `financiamiento ${fin[1]}`;
+    p.innerHTML = ICO.financia;
+    const s = document.createElement("span");
+    s.textContent = fin[0];
+    p.append(s);
+    datos.after(p);
+  }
 
   const etq = $(".etiquetas", t);
   if (auto.bajoPrecio) etq.insertAdjacentHTML("beforeend", `<span class="etiqueta etiqueta--baja">Bajó de precio</span>`);

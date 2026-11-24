@@ -326,8 +326,13 @@ button, input, select { font: inherit; color: inherit; }
 .tarjeta-marca { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ambar); }
 .tarjeta-modelo { font-family: var(--f-titulo); font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-top: 2px; line-height: 1.2; }
 .tarjeta-version { color: var(--texto-2); font-size: 13.5px; margin-top: 2px; min-height: 1.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tarjeta-datos { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 14px 0 16px; font-size: 13px; color: #d4d4d8; }
-.tarjeta-datos li { display: inline-flex; align-items: center; gap: 6px; }
+.tarjeta-datos { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 9px 14px; margin: 14px 0 14px; font-size: 13px; color: #d4d4d8; }
+.tarjeta-datos li { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.tarjeta-datos li span { line-height: 1.3; }
+.tarjeta-datos li { align-items: flex-start; }
+.tarjeta-datos li .ico { margin-top: 1px; flex: none; }
+.tarjeta-datos .dato--estado { color: #86efac; }
+.tarjeta-datos .dato--estado .ico { color: var(--verde); }
 .tarjeta-datos .ico { width: 15px; height: 15px; color: var(--ambar); }
 .tarjeta-pie {
   margin-top: auto; padding-top: 16px; border-top: 1px solid var(--linea);
@@ -485,3 +490,14 @@ section[id] { scroll-margin-top: 96px; }
 .fila-flecha:active { transform: scale(0.92); }
 @media (hover: hover) and (min-width: 960px) { .fila-flechas { display: inline-flex; } }
 .fila-ver + .fila-flechas { margin-left: 12px; }
+
+/* ---------- Financiamiento (regla de 6 años) ---------- */
+.financiamiento {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 14px; padding: 9px 12px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; line-height: 1.3;
+}
+.financiamiento .ico { width: 16px; height: 16px; flex: none; }
+.fin--si { background: rgba(34, 197, 94, 0.1); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25); }
+.fin--consultar { background: var(--ambar-suave); color: #fcd38a; border: 1px solid rgba(245, 165, 36, 0.3); }
+.fin--contado { background: rgba(56, 189, 248, 0.1); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3); }

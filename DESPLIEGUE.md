@@ -135,3 +135,13 @@ Los cambios aparecen en el catálogo en máximo 5 minutos.
 - El inventario muestra 20 autos y un botón **"Ver más"**.
 - Arriba aparecen filas **"Bajaron de precio"** (requiere la columna `Precio anterior`), **"Recién llegados"**
   (según `Primera vez visto`) y **"Menos de $250,000"**. Una fila solo aparece si tiene 2 autos o más.
+
+---
+
+## Ficha de cada auto (motor, transmisión, pasajeros, financiamiento)
+
+- Columnas opcionales en `Hoja 1` (y en `Clientes`): **`Motor`**, **`Transmisión`**, **`Pasajeros`**.
+  Si están vacías, se deducen del título (ej. "1.6 … At" → 1.6 L, Automática; "15 Pas" → 15 pasajeros).
+- **Financiamiento** (en `netlify/lib/ficha.mjs`): agencia con 6 años o menos → "Se puede financiar";
+  más de 6 años → "Pregunta por opciones de pago"; particulares → "Solo contado".
+- **Nunca** se publican número de serie, teléfonos ni la descripción de la agencia.

@@ -1,6 +1,7 @@
 // Convierte las filas del Sheet en autos listos para mostrar.
 // Las columnas se buscan por NOMBRE de encabezado, así que el orden puede cambiar sin romper nada.
 import { tipoVehiculo } from "./tipos.mjs";
+import { motorDe, transmisionDe, pasajerosDe, financiamientoDe } from "./ficha.mjs";
 
 // Marcas con escritura especial (la primera palabra del título es la marca).
 const MARCAS_ESPECIALES = {
@@ -123,7 +124,12 @@ export function filasAAutos(filas, origen = "agencia", letras = {}) {
     bajo: buscarColumna(enc, "bajo de precio", "bajo precio"),
     pago: buscarColumna(enc, "forma de pago", "pago"),
     cuenta: buscarColumna(enc, "cuenta", "agencia"),
+    // Ficha (opcionales: si no existen o están vacías, se deduce del título)
+    motor: buscarColumna(enc, "motor"),
+    transmision: buscarColumna(enc, "transmision"),
+    pasajeros: buscarColumna(enc, "pasajeros", "numero de pasajeros", "asientos"),
   };
+  const valor = (f, i) => (i !== -1 ? f[i] : "");
   const colFotos = enc
     .map((h, i) => (/^foto\s*\d+$/.test(normalizar(h)) ? i : -1))
     .filter((i) => i !== -1);
@@ -159,6 +165,11 @@ export function filasAAutos(filas, origen = "agencia", letras = {}) {
       tipo: tipoVehiculo(marca, modelo, titulo),
       version,
       anio,
+      motor: motorDe(valor(f, col.motor), titulo),
+      transmision: transmisionDe(valor(f, col.transmision), titulo),
+      pasajeros: pasajerosDe(valor(f, col.pasajeros), titulo),
+      financiamiento: financiamientoDe(anio, esCliente),
+      estado: "Disponible", // solo llegan aquí los autos activos
       precio,
       km: col.km !== -1 ? numero(f[col.km]) : null,
       visto: col.visto !== -1 ? fecha(f[col.visto]) : "",
