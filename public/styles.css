@@ -403,3 +403,6 @@ section[id] { scroll-margin-top: 96px; }
 .barra-esq--2 { width: 60%; height: 18px; }
 .barra-esq--3 { width: 45%; }
 .barra-esq--4 { width: 40%; height: 22px; margin-top: 18px; }
+
+.pie-interior { flex-wrap: wrap; }
+.pie-privado { display: flex; align-items: center; gap: 12px; }

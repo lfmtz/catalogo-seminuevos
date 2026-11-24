@@ -44,7 +44,7 @@ En Netlify: **Site configuration** → **Environment variables** → **Add a var
 
 | Variable | Valor |
 |---|---|
-| `CODIGO_ACCESO` | El código que darás a tus clientes, p. ej. `IZTA2026` |
+| `CODIGO_ACCESO` | (Opcional, solo si `PEDIR_CODIGO=si`) El código para tus clientes |
 | `SESSION_SECRET` | Una frase larga al azar (mínimo 16 caracteres), p. ej. `mi-catalogo-secreto-7f3k9q2m` |
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | Abre el `.json` del paso 1 con el Bloc de notas, copia **todo** y pégalo aquí |
 
@@ -59,15 +59,19 @@ Después: **Deploys** → **Trigger deploy** → **Deploy site** para que tome l
 
 ## Paso 4. Probar y compartir
 
-- Abre el link de Netlify (p. ej. `https://seminuevos-catalogo.netlify.app`) y escribe el código.
-- Para que tus clientes no tengan que teclear el código, comparte el link así:
+- **Por defecto el catálogo es de acceso libre:** el link abre directo, sin código.
+  Sigue oculto de Google (noindex + robots.txt), pero quien tenga el link puede verlo.
 
   ```
-  https://seminuevos-catalogo.netlify.app/#codigo=TU_CODIGO
+  https://seminuevos-catalogo.netlify.app
   ```
 
-  Entra directo y el código se borra de la barra de direcciones.
-- **Para cambiar el código:** edita `CODIGO_ACCESO` en Netlify y vuelve a desplegar. Todas las sesiones anteriores se cierran solas.
+### Si algún día quieres volver a pedir código
+1. En Netlify agrega la variable `PEDIR_CODIGO` con valor `si` (además de `CODIGO_ACCESO`).
+2. **Deploys** → **Trigger deploy**.
+3. Comparte el link con el código incluido para que no lo tengan que teclear:
+   `https://seminuevos-catalogo.netlify.app/#codigo=TU_CODIGO`
+- El código no distingue mayúsculas/minúsculas. Al cambiar `CODIGO_ACCESO`, las sesiones anteriores se cierran solas.
 - Puedes cambiar el nombre del sitio en **Site configuration** → **Change site name**.
 
 ---

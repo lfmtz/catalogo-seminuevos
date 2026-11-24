@@ -1,4 +1,6 @@
-// GET /api/autos → lista de autos activos, solo si hay sesión válida.
+// GET /api/autos → lista de autos activos.
+// Por defecto el catálogo es de acceso libre (el link abre directo).
+// Para volver a pedir código: en Netlify, variable PEDIR_CODIGO = si (y CODIGO_ACCESO con el código).
 import { sesionValida, json } from "../lib/sesion.mjs";
 import { leerHoja } from "../lib/google.mjs";
 import { filasAAutos } from "../lib/autos.mjs";
@@ -8,8 +10,11 @@ const CACHE_MS = 5 * 60 * 1000; // la hoja cambia una vez al día; 5 min de cach
 
 let cache = { autos: null, hora: 0 };
 
+const pideCodigo = () => ["si", "sí", "true", "1"].includes(String(process.env.PEDIR_CODIGO || "").trim().toLowerCase());
+
 export default async (req) => {
-  if (!sesionValida(req)) return json({ error: "Necesitas el código de acceso" }, 401);
+  const conCodigo = pideCodigo();
+  if (conCodigo && !sesionValida(req)) return json({ error: "Necesitas el código de acceso" }, 401);
 
   try {
     if (!cache.autos || Date.now() - cache.hora > CACHE_MS) {
@@ -21,7 +26,7 @@ export default async (req) => {
     }
     // Quitamos el campo interno "fila" antes de mandarlo al navegador.
     const autos = cache.autos.map(({ fila, ...a }) => ({ ...a, orden: fila }));
-    return json({ autos, actualizado: new Date(cache.hora).toISOString() });
+    return json({ autos, actualizado: new Date(cache.hora).toISOString(), conCodigo });
   } catch (e) {
     console.error(e);
     // El código corto ayuda a diagnosticar sin exponer datos sensibles.

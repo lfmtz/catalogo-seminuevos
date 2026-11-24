@@ -59,7 +59,9 @@ const yaEntro = {
 };
 
 async function cargarCatalogo() {
-  if (yaEntro.get()) { mostrarCatalogo(); pintarEsqueletos(); }
+  // El catálogo normalmente es de acceso libre: se muestra el esqueleto de inmediato.
+  mostrarCatalogo();
+  pintarEsqueletos();
   try {
     const r = await fetch("/api/autos", { credentials: "same-origin" });
     if (r.status === 401) { yaEntro.set(false); return mostrarAcceso(); }
@@ -72,6 +74,8 @@ async function cargarCatalogo() {
     const datos = await r.json();
     estado.autos = prepararAutos(datos.autos || []);
     pintarFecha(datos.actualizado);
+    // Sin código de acceso no tiene sentido el botón "Salir" ni el aviso de catálogo privado.
+    $("#pie-privado").hidden = !datos.conCodigo;
     iniciarFiltros();
     pintarPortada();
     aplicar();
