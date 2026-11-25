@@ -1,0 +1,184 @@
+/* =========================================================
+   Tema "Noir": editorial, negro con textura, serif fina enorme,
+   etiquetas en mayúsculas espaciadas, esquinas rectas y líneas finas.
+   Se carga DESPUÉS de ../styles.css: mismo catálogo, otra piel.
+   ========================================================= */
+:root {
+  color-scheme: dark;
+  --fondo: #0b0b0b;
+  --fondo-2: #121212;
+  --tarjeta: #0b0b0b;
+  --tarjeta-2: #171717;
+  --hueso: #f2f1ed;
+  --linea: rgba(242, 241, 237, 0.1);
+  --linea-fuerte: rgba(242, 241, 237, 0.24);
+  --texto: #f2f1ed;
+  --texto-2: rgba(242, 241, 237, 0.64);
+  --texto-3: rgba(242, 241, 237, 0.42);
+  --rojo: #c4705f;                          /* acento: rojo apagado, solo en detalles */
+  --ambar: var(--hueso);
+  --ambar-2: var(--hueso);
+  --ambar-suave: rgba(242, 241, 237, 0.06);
+  --verde: #9fbf9a;
+  /* El acento del titular se desvanece de hueso a rojo a gris, como tinta */
+  --grad: linear-gradient(90deg, #f2f1ed 0%, #f2f1ed 40%, #c4705f 72%, rgba(242, 241, 237, 0.4) 100%);
+  --radio: 0px;
+  --radio-chico: 0px;
+  --sombra: none;
+  --f-titulo: "Instrument Serif", "Times New Roman", serif;
+  --f-texto: "Geist", system-ui, sans-serif;
+  --etiqueta: 600 10.5px/1.2 var(--f-texto);
+}
+
+/* Fondo negro con grano fino (ruido SVG, sin imágenes externas) */
+body {
+  background-color: var(--fondo);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: var(--texto);
+  font-weight: 300;
+}
+
+/* Etiquetas: mayúsculas muy espaciadas */
+.pastilla, .pastilla--suave, .barra-nav, .campo > span, .orden label, .populares > span,
+.tarjeta-marca, .tarjeta-precio-etq, .fila-n, .resumen, .tipo, .chip, .etiqueta, .origen, .financiamiento, .pie {
+  font: var(--etiqueta); letter-spacing: 0.22em; text-transform: uppercase;
+}
+
+/* ---------- Botones: contorno fino, texto espaciado ---------- */
+.btn {
+  border-radius: 0; height: 48px; padding: 0 26px;
+  font: 600 11px/1 var(--f-texto); letter-spacing: 0.26em; text-transform: uppercase;
+}
+.btn--primario, .btn--fantasma { background: transparent; color: var(--texto); border: 1px solid var(--linea-fuerte); box-shadow: none; }
+@media (hover: hover) {
+  .btn--primario:hover, .btn--fantasma:hover { background: var(--hueso); color: #0b0b0b; filter: none; border-color: var(--hueso); }
+}
+.btn .ico { width: 15px; height: 15px; }
+
+/* ---------- Barra: logotipo al centro ---------- */
+.barra { background: rgba(11, 11, 11, 0.72); border-bottom: 1px solid var(--linea); }
+.barra-interior { display: grid; grid-template-columns: 1fr auto; height: 72px; }
+.logo-icono { background: none; box-shadow: none; color: var(--hueso); width: auto; height: auto; }
+.logo-icono svg { width: 26px; height: 26px; stroke-width: 1.4; }
+.logo-texto { font: 600 13px/1 var(--f-texto); letter-spacing: 0.42em; }
+.logo-texto b { color: var(--texto-3); font-weight: 600; }
+.barra .btn--chico { height: 38px; padding: 0 16px; }
+@media (min-width: 960px) {
+  .barra-interior { grid-template-columns: 1fr auto 1fr; }
+  .barra-nav { order: -1; justify-self: start; gap: 34px; color: var(--texto-2); }
+  .barra .logo { justify-self: center; }
+  .barra .btn { justify-self: end; }
+}
+
+/* ---------- Portada: titular enorme centrado ---------- */
+.portada { padding: 56px 0 40px; text-align: center; }
+.portada-fondo img { filter: grayscale(0.35) brightness(0.32) blur(3px); }
+.portada-fondo::before { background: radial-gradient(70% 70% at 50% 40%, rgba(11, 11, 11, 0.35), rgba(11, 11, 11, 0.92)), linear-gradient(0deg, var(--fondo) 0%, transparent 40%); }
+.portada-fondo::after { background: none; }
+.portada-interior { grid-template-columns: 1fr !important; justify-items: center; gap: 48px; }
+.portada-texto { align-items: center; gap: 22px; }
+.pastilla { background: none; border: none; padding: 0; color: var(--texto-2); }
+.pastilla .ico { display: none; }
+.titulo-grande {
+  font-family: var(--f-titulo); font-weight: 400; letter-spacing: -0.01em;
+  font-size: clamp(58px, 13vw, 148px); line-height: 0.92;
+}
+.titulo-grande .acento { font-style: italic; }
+.portada-sub { color: var(--texto-2); font-size: 15px; max-width: 400px; margin-inline: auto; }
+.portada-acciones { justify-content: center; }
+.cifras { justify-content: center; gap: 40px; border-top: 1px solid var(--linea); padding-top: 22px; }
+.cifras dt { font-family: var(--f-titulo); font-weight: 400; font-size: 40px; }
+.cifras dd { font: var(--etiqueta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--texto-3); margin-top: 4px; }
+
+/* Buscador: una franja con líneas finas en lugar de tarjeta de vidrio */
+.buscador {
+  width: 100%; max-width: 1100px; text-align: left;
+  background: none; border: none; border-block: 1px solid var(--linea);
+  backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; border-radius: 0; padding: 24px 0;
+}
+.buscador-cabeza { margin: 0; }
+.buscador-icono { display: none; }
+.buscador h2 { font: var(--etiqueta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--texto-2); }
+.buscador-cabeza p { display: none; }
+.campo input, .campo select, .orden select {
+  border-radius: 0; background-color: transparent; border: none; border-bottom: 1px solid var(--linea-fuerte);
+  padding-left: 0; font-family: var(--f-texto); font-weight: 300;
+}
+.campo input:focus, .campo select:focus, .orden select:focus { background-color: transparent; border-color: var(--hueso); }
+.campo select option, .orden select option { background: #121212; }
+.campo > span, .orden label { color: var(--texto-3); }
+.populares { border-top: none; padding-top: 0; }
+@media (min-width: 960px) {
+  .buscador { display: grid; grid-template-columns: repeat(4, 1fr) auto; align-items: end; gap: 28px; }
+  .buscador-cabeza, .populares { grid-column: 1 / -1; }
+  .populares { flex-direction: row; align-items: center; gap: 16px; }
+}
+
+/* Chips y pestañas: rectángulos de línea fina */
+.chip { border-radius: 0; background: transparent; height: 34px; color: var(--texto-2); }
+.chip[aria-pressed="true"] { background: var(--hueso); color: #0b0b0b; border-color: var(--hueso); }
+.chips--fila .chip small { font-size: 10px; letter-spacing: 0.1em; }
+.tipos { border-radius: 0; background: transparent; padding: 0; gap: 0; }
+.tipo { border-radius: 0; height: 40px; }
+.tipo[aria-pressed="true"] { background: var(--hueso); color: #0b0b0b; }
+
+/* ---------- Secciones ---------- */
+.pastilla--suave { color: var(--rojo); }
+.titulo-seccion { font-family: var(--f-titulo); font-weight: 400; font-size: clamp(44px, 9vw, 84px); line-height: 0.95; letter-spacing: -0.01em; }
+.titulo-seccion .acento, .fila-titulo .acento { font-style: italic; }
+.resumen { color: var(--texto-3); }
+.fila-titulo { font-family: var(--f-titulo); font-weight: 400; font-size: clamp(32px, 6vw, 48px); }
+.fila-flecha { border-radius: 0; background: transparent; }
+.fila-ver { color: var(--hueso); font: var(--etiqueta); letter-spacing: 0.22em; text-transform: uppercase; }
+
+/* ---------- Tarjetas: foto, serif grande y líneas ---------- */
+.rejilla { gap: 48px 28px; }
+.tarjeta { background: transparent; border: none; border-radius: 0; box-shadow: none; }
+@media (hover: hover) {
+  .tarjeta:hover { transform: none; box-shadow: none; }
+  .tarjeta .foto img { transition: opacity 360ms var(--ease), transform 900ms var(--ease); }
+  .tarjeta:hover .foto.lista img { transform: scale(1.035); }
+}
+.tarjeta-media { background: var(--tarjeta-2); }
+.tarjeta-media::after { height: 30%; background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), transparent); }
+.tarjeta-cuerpo { padding: 20px 0 0; }
+.tarjeta-marca { color: var(--texto-3); }
+.tarjeta-modelo { font-family: var(--f-titulo); font-weight: 400; font-size: 38px; line-height: 1; margin-top: 8px; }
+.tarjeta-version { font-size: 13px; margin-top: 6px; }
+.tarjeta-datos { color: var(--texto-2); border-top: 1px solid var(--linea); padding-top: 14px; font-weight: 300; }
+.tarjeta-datos .ico { color: var(--texto-3); }
+.tarjeta-datos .dato--estado, .tarjeta-datos .dato--estado .ico { color: var(--verde); }
+.tarjeta-pie { border-top: 1px solid var(--linea); }
+.tarjeta-precio { font: 400 26px/1 var(--f-texto); letter-spacing: 0.02em; }
+.tarjeta-wa .ico { display: none; }
+.origen { border-radius: 0; }
+
+/* Etiquetas sobre la foto */
+.etiqueta { border-radius: 0; box-shadow: none; padding: 6px 10px; }
+.etiqueta--nuevo { background: var(--hueso); color: #0b0b0b; }
+.etiqueta--baja { background: var(--rojo); color: #0b0b0b; }
+/* Puntos del carrusel como líneas */
+.punto { width: 16px; height: 2px; border-radius: 0; background: rgba(242, 241, 237, 0.4); }
+.punto.activo { width: 34px; background: var(--hueso); }
+.flecha { border-radius: 0; }
+
+/* Financiamiento: discreto, de línea */
+.financiamiento { border-radius: 0; background: transparent; padding: 10px 0; border: none; border-top: 1px solid var(--linea); margin: 0; }
+.fin--si { color: var(--verde); }
+.fin--consultar { color: var(--rojo); }
+.fin--contado { color: var(--texto-2); }
+
+.ver-mas .btn { min-width: 280px; }
+.vacio { border-radius: 0; }
+
+/* ---------- Contacto y pie ---------- */
+.cta {
+  background: transparent; border: none; border-block: 1px solid var(--linea); border-radius: 0;
+  flex-direction: column; align-items: center; text-align: center; padding: 72px 16px;
+}
+.cta::before { background: radial-gradient(40% 80% at 50% 100%, rgba(196, 112, 95, 0.12), transparent 70%); }
+.cta h2 { font-family: var(--f-titulo); font-weight: 400; font-size: clamp(40px, 8vw, 72px); line-height: 1; }
+.cta p { color: var(--texto-2); margin-inline: auto; }
+.pie { color: var(--texto-3); }
+.pie-interior { font-size: inherit; }
+.aviso { font-size: 12px; color: var(--texto-3); }
