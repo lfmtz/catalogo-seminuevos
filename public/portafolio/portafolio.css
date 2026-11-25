@@ -15,7 +15,8 @@ h1 { font: 700 clamp(34px, 6vw, 52px)/1.05 "Outfit", system-ui, sans-serif; lett
 .intro { color: var(--texto-2); font-size: 16px; }
 
 .estilos { display: grid; gap: 20px; grid-template-columns: 1fr; }
-@media (min-width: 820px) { .estilos { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 700px) { .estilos { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1080px) { .estilos { grid-template-columns: repeat(4, 1fr); } }
 .estilo { display: flex; flex-direction: column; border: 1px solid var(--linea); border-radius: 16px; overflow: hidden; background: var(--tarjeta); transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), border-color 200ms; }
 .estilo:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.22); }
 .estilo:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
@@ -48,3 +49,9 @@ h1 { font: 700 clamp(34px, 6vw, 52px)/1.05 "Outfit", system-ui, sans-serif; lett
 .incluye li b { color: var(--texto); font-weight: 600; }
 .nota { font-size: 13px; color: var(--texto-2); }
 @media (prefers-reduced-motion: reduce) { .estilo { transition: none; } }
+
+.estilo--grafito .muestra { background: radial-gradient(80% 80% at 80% 20%, #2a2a2a, #000); }
+.m-etiqueta { font: 400 10px/1 "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; color: #9b9b9b; }
+.estilo--grafito .m-titulo { font-family: "Inter", sans-serif; font-weight: 500; letter-spacing: -0.04em; color: #fff; }
+.estilo--grafito .m-titulo b { font-weight: 500; color: #9a9a9a; }
+.estilo--grafito .m-boton { background: #fff; color: #000; border-radius: 4px; font-family: "Inter", sans-serif; font-weight: 500; }
