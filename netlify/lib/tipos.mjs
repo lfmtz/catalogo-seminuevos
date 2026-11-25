@@ -26,7 +26,7 @@ const TIPOS = {
     "outlander", "asx", "eclipsecross", "forester", "outback", "crosstrek", "xv", "vitara", "grandvitara", "jimny",
     "cs35", "cs55", "x35", "x55", "x70", "tiggo", "jetour", "haval", "jolion", "h6",
     "x1", "x2", "x3", "x4", "x5", "x6", "x7", "q2", "q3", "q5", "q7", "q8", "gla", "glb", "glc", "gle", "gls",
-    "xc40", "xc60", "xc90", "macan", "cayenne", "evoque", "discovery", "rangerover", "defender",
+    "xc40", "xc60", "xc90", "claseglc", "clasegla", "claseglb", "clasegle", "clasegls", "clasegl", "claseg", "macan", "cayenne", "evoque", "discovery", "rangerover", "defender",
   ],
   Sedán: [
     "versa", "sentra", "altima", "maxima", "vdrive", "tsuru",
@@ -35,7 +35,7 @@ const TIPOS = {
     "rio", "forte", "k3", "k4", "accent", "elantra", "sonata", "ioniq",
     "3", "6", "corolla", "camry", "civic", "accord", "city", "insight",
     "301", "408", "a3", "a4", "a5", "a6", "serie3", "serie5", "clasec", "clasea", "clasee",
-    "attrage", "lancer", "mirageg4", "mg5", "gt", "logan", "fluence", "dart", "fusion", "figosedan",
+    "clasecla", "clases", "claseclase", "charger", "300", "cla", "s60", "s90", "a6", "serie4", "attrage", "lancer", "mirageg4", "mg5", "gt", "logan", "fluence", "dart", "fusion", "figosedan",
   ],
   Hatchback: [
     "march", "note", "tiida", "spark", "beat", "swift", "ignite", "baleno", "polo", "gol", "up", "golf", "crossfox",

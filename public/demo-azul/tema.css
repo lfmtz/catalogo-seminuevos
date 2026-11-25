@@ -1,0 +1,81 @@
+/* =========================================================
+   Tema "Azul": blanco con azul (claro). Se carga DESPUÉS de ../styles.css
+   y solo cambia colores; el acomodo y el comportamiento son los mismos.
+   ========================================================= */
+:root {
+  color-scheme: light;
+  --fondo: #ffffff;
+  --fondo-2: #f3f6fb;
+  --tarjeta: #ffffff;
+  --tarjeta-2: #eaf0f8;
+  --linea: rgba(14, 42, 92, 0.09);
+  --linea-fuerte: rgba(14, 42, 92, 0.16);
+  --texto: #0d1b2e;
+  --texto-2: #475569;
+  --texto-3: #74839a;
+  --ambar: #0b5cd5;            /* acento (azul) */
+  --ambar-2: #0846a6;
+  --ambar-suave: rgba(11, 92, 213, 0.08);
+  --grad: linear-gradient(135deg, #2474ea 0%, #0846a6 100%);
+  --sombra: 0 18px 40px -22px rgba(14, 42, 92, 0.35);
+  --sobre-acento: #ffffff;     /* texto encima del azul */
+}
+
+body { background: var(--fondo); color: var(--texto); }
+
+/* Botones y elementos sobre el azul */
+.btn--primario { color: var(--sobre-acento); box-shadow: 0 10px 26px -12px rgba(11, 92, 213, 0.55); }
+.btn--fantasma { background: var(--fondo-2); }
+@media (hover: hover) { .btn--fantasma:hover { background: var(--tarjeta-2); } }
+.logo-icono, .buscador-icono, .etiqueta--nuevo, .tipo[aria-pressed="true"] { color: var(--sobre-acento); }
+.logo-icono { box-shadow: 0 6px 18px -8px rgba(11, 92, 213, 0.6); }
+.pastilla { background: var(--fondo-2); }
+
+/* Barra y portada */
+.barra { background: rgba(255, 255, 255, 0.86); }
+.portada { background: var(--fondo-2); }
+.portada-fondo img { filter: saturate(1) brightness(1); }
+.portada-fondo::before {
+  background:
+    linear-gradient(90deg, rgba(243, 246, 251, 0.98) 0%, rgba(243, 246, 251, 0.88) 50%, rgba(243, 246, 251, 0.35) 100%),
+    linear-gradient(0deg, var(--fondo) 0%, transparent 30%);
+}
+.portada-fondo::after { background: radial-gradient(55% 60% at 85% 10%, rgba(36, 116, 234, 0.14), transparent 70%); }
+.portada-sub { color: var(--texto-2); }
+
+/* Buscador y campos */
+.vidrio { background: rgba(255, 255, 255, 0.82); box-shadow: var(--sombra); }
+.campo > span, .orden label { color: var(--texto); }
+.campo input, .campo select, .orden select { background-color: var(--fondo-2); }
+.campo input:focus, .campo select:focus, .orden select:focus { background-color: #ffffff; }
+.campo select option, .orden select option { background: #ffffff; color: var(--texto); }
+.chip { background: var(--fondo-2); }
+@media (hover: hover) { .chip:hover { border-color: rgba(11, 92, 213, 0.45); } }
+.tipos { background: var(--fondo-2); }
+@media (hover: hover) { .tipo[aria-pressed="false"]:hover { background: var(--tarjeta-2); } }
+
+/* Tarjetas */
+.tarjeta { box-shadow: 0 1px 2px rgba(14, 42, 92, 0.06), 0 8px 24px -16px rgba(14, 42, 92, 0.25); }
+.foto::before, .tarjeta--esqueleto .tarjeta-media {
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.7) 50%, transparent 80%) var(--tarjeta-2);
+  background-size: 200% 100%;
+}
+.tarjeta-datos { color: var(--texto-2); }
+.tarjeta-datos .dato--estado { color: #15803d; }
+.origen--agencia { background: var(--fondo-2); }
+.origen--cliente { background: rgba(2, 132, 199, 0.1); color: #0369a1; border-color: rgba(2, 132, 199, 0.3); }
+.fila-flecha { background: var(--fondo-2); }
+.fila-flecha:hover { background: var(--tarjeta-2); }
+
+/* Financiamiento legible sobre blanco */
+.fin--si { background: rgba(22, 163, 74, 0.08); color: #15803d; border-color: rgba(22, 163, 74, 0.25); }
+.fin--consultar { background: rgba(217, 119, 6, 0.08); color: #b45309; border-color: rgba(217, 119, 6, 0.3); }
+.fin--contado { background: rgba(2, 132, 199, 0.08); color: #0369a1; border-color: rgba(2, 132, 199, 0.3); }
+
+/* Franja de contacto en azul */
+.cta { background: var(--grad); border-color: transparent; color: #ffffff; }
+.cta::before { background: radial-gradient(50% 120% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 70%); }
+.cta p { color: rgba(255, 255, 255, 0.88); }
+.cta .btn--primario { background: #ffffff; color: var(--ambar-2); box-shadow: none; }
+.pie { background: var(--fondo-2); }
+.pastilla--suave { border-color: rgba(11, 92, 213, 0.25); }

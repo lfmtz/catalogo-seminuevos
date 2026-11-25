@@ -2,8 +2,18 @@
 // Aquí NO hay códigos ni credenciales: todo se valida en las funciones de Netlify (/api/*).
 "use strict";
 
-const WHATSAPP = "525521787900";
-const MSG_GENERAL = "Hola Luis, vi tu catálogo de seminuevos y quiero información.";
+// Configuración por catálogo. Cada copia (otro asesor, demo) define window.CATALOGO en su config.js;
+// si no existe, se usan los valores de Luis.
+const CFG = Object.assign(
+  {
+    asesor: "Luis",                 // nombre en los mensajes de WhatsApp
+    whatsapp: "525521787900",       // 52 + 10 dígitos
+    datos: "/api/autos",            // de dónde salen los autos (función de Netlify o un .json fijo)
+  },
+  window.CATALOGO || {}
+);
+const WHATSAPP = CFG.whatsapp;
+const MSG_GENERAL = `Hola ${CFG.asesor}, vi tu catálogo de seminuevos y quiero información.`;
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -40,10 +50,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (ok) return;
     // El código del link no sirvió (p. ej. Luis lo cambió). Si el teléfono ya tenía sesión, entra igual;
     // si no, se muestra la pantalla de acceso con un aviso claro.
-    const r = await fetch("/api/autos", { credentials: "same-origin" }).catch(() => null);
+    const r = await fetch(CFG.datos, { credentials: "same-origin" }).catch(() => null);
     if (r && r.ok) return cargarCatalogo();
     mostrarAcceso();
-    errorAcceso("Este link ya no es válido. Escribe el código o pídele a Luis un link nuevo.");
+    errorAcceso(`Este link ya no es válido. Escribe el código o pídele a ${CFG.asesor} un link nuevo.`);
     return;
   }
   cargarCatalogo();
@@ -69,7 +79,7 @@ async function cargarCatalogo() {
   mostrarCatalogo();
   pintarEsqueletos();
   try {
-    const r = await fetch("/api/autos", { credentials: "same-origin" });
+    const r = await fetch(CFG.datos, { credentials: "same-origin" });
     if (r.status === 401) { yaEntro.set(false); return mostrarAcceso(); }
     yaEntro.set(true);
     mostrarCatalogo();
